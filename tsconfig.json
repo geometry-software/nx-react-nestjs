@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/frontend"
+    },
+    {
+      "path": "./apps/auth-service"
+    },
+    {
+      "path": "./apps/products-service"
+    },
+    {
+      "path": "./apps/users-service"
+    },
+    {
+      "path": "./packages/backend-utils"
+    },
+    {
+      "path": "./packages/components"
+    },
+    {
+      "path": "./apps/shipping-service"
+    },
+    {
+      "path": "./apps/invoices-service"
+    }
+  ],
+  "compilerOptions": {}
+}

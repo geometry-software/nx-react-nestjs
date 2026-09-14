@@ -1,0 +1,64 @@
+{
+  "name": "@nx-react-nestjs/shipping-service",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "shipping-service",
+    "targets": {
+      "prune-lockfile": {
+        "dependsOn": ["build"],
+        "cache": true,
+        "executor": "@nx/js:prune-lockfile",
+        "outputs": [
+          "{workspaceRoot}/apps/shipping-service/dist/package.json",
+          "{workspaceRoot}/apps/shipping-service/dist/package-lock.json"
+        ],
+        "options": { "buildTarget": "build" }
+      },
+      "copy-workspace-modules": {
+        "dependsOn": ["build"],
+        "cache": true,
+        "outputs": ["{workspaceRoot}/apps/shipping-service/dist/workspace_modules"],
+        "executor": "@nx/js:copy-workspace-modules",
+        "options": { "buildTarget": "build" }
+      },
+      "prune": {
+        "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+        "executor": "nx:noop"
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": ["build"],
+        "options": {
+          "buildTarget": "shipping-service:build",
+          "inspect": false,
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": { "buildTarget": "shipping-service:build:development" },
+          "production": { "buildTarget": "shipping-service:build:production" }
+        }
+      }
+    },
+    "tags": ["type:app", "scope:backend"]
+  },
+  "dependencies": {
+    "@nx-react-nestjs/backend-utils": "*",
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/config": "^12.0.0",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "@nestjs/swagger": "^12.0.1",
+    "@nestjs/typeorm": "^12.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "mongodb": "^7.6.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.3.0",
+    "typeorm": "^1.1.1"
+  },
+  "devDependencies": { "@nestjs/testing": "^12.0.1" }
+}

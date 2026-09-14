@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "secondary-fixed": "#c9e6ff", "on-primary-fixed-variant": "#3323cc", "on-secondary-container": "#004666", "surface-dim": "#d2d9f4", "secondary-container": "#39b8fd", "on-surface-variant": "#464555", "outline-variant": "#c7c4d8", "on-tertiary": "#ffffff", "tertiary": "#7e3000", "background": "#faf8ff", "inverse-primary": "#c3c0ff", "on-tertiary-fixed": "#351000", "surface-bright": "#faf8ff", "on-primary-container": "#dad7ff", "surface": "#faf8ff", "surface-container-high": "#e2e7ff", "on-primary-fixed": "#0f0069", "on-surface": "#131b2e", "on-tertiary-fixed-variant": "#7b2f00", "secondary-fixed-dim": "#89ceff", "primary-fixed-dim": "#c3c0ff", "surface-container-lowest": "#ffffff", "on-background": "#131b2e", "tertiary-fixed": "#ffdbcc", "secondary": "#006591", "on-secondary-fixed": "#001e2f", "outline": "#777587", "tertiary-container": "#a44100", "inverse-surface": "#283044", "tertiary-fixed-dim": "#ffb695", "surface-tint": "#4d44e3", "primary-fixed": "#e2dfff", "surface-container-low": "#f2f3ff", "on-primary": "#ffffff", "surface-container-highest": "#dae2fd", "on-error-container": "#93000a", "error-container": "#ffdad6", "inverse-on-surface": "#eef0ff", "surface-container": "#eaedff", "surface-variant": "#dae2fd", "on-error": "#ffffff", "primary": "#3525cd", "primary-container": "#4f46e5", "on-tertiary-container": "#ffd2be", "error": "#ba1a1a", "on-secondary-fixed-variant": "#004c6e", "on-secondary": "#ffffff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "gutter": "1.5rem", "margin-lg": "3rem", "gutter-lg": "2rem", "gutter-sm": "1rem", "margin": "1.5rem", "space-md": "1rem", "space-xl": "2rem", "margin-sm": "1rem" }, "fontFamily": { "label-sm": ["Inter"], "display-hero-mobile": ["Plus Jakarta Sans"], "code-badge": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "body-md": ["Inter"], "headline-sm": ["Plus Jakarta Sans"], "data-cell": ["Inter"], "display-hero": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "label-md": ["Inter"], "table-header": ["Inter"], "body-sm": ["Inter"], "body-lg": ["Inter"], "eyebrow-caps": ["Inter"] }, "fontSize": { "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "display-hero-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "code-badge": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "data-cell": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "display-hero": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "table-header": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "eyebrow-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-full antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)] pt-safe"><div class="h-16 px-gutter-sm flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0 flex-1"><img alt="NX Commerce Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1XIreGTBFVebQbl2fP2ytvQfestWYzBrlP3S9PWtsGIx9z5gxtbMj35dj_Yjun03etkunSiRrwe8TABeULaYba7ei0y-Bk4wF0zloUaB0IH_wx6dwhfB967zg8UR_j-fnSmz3bHUgUr_6OkNRCkQIqn_co7ZKtXwGe-5cc7ulVqMLLatGnH4ikrrFt17FS7bFaIANZjJMgthHgQCxvVS1l8Rh3fkOrZqwvE2szHKoPD22Ghjxcyui13-xQ"/><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface truncate">NX Commerce</span><span class="px-space-xs py-0.5 bg-secondary-fixed text-on-secondary-fixed-variant rounded font-code-badge text-code-badge flex-shrink-0">LIVE</span></div><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Products</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button class="w-11 h-11 flex items-center justify-center rounded-xl text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">search</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-20 px-gutter-sm bg-surface"><div class="flex flex-col w-full pb-6 space-y-space-md">
+<!-- Page Subheader & URL State Indicator -->
+<div class="flex items-center justify-between gap-space-xs px-space-xs pt-1">
+<div class="flex items-center gap-space-xs min-w-0">
+<h1 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">Catalog Items</h1>
+<span class="px-space-xs py-0.5 bg-surface-container-high text-primary font-code-badge text-code-badge rounded truncate max-w-[150px]" title="?sort=date&order=desc">
+        ?sort=date&order=desc
+      </span>
+</div>
+<button class="inline-flex items-center gap-1 bg-primary text-on-primary font-label-sm text-label-sm px-space-sm py-1.5 rounded-xl shadow-sm active:scale-95 transition-transform flex-shrink-0" id="triggerAddModal">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add Item</span>
+</button>
+</div>
+<!-- Search Input with ⌘K Badge -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full pl-10 pr-12 py-2.5 bg-surface-container-lowest text-on-surface placeholder-outline font-body-md text-body-md rounded-xl shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors" placeholder="Search sku, title, description..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<span class="px-1.5 py-0.5 bg-surface-container text-on-surface-variant font-code-badge text-code-badge rounded">⌘K</span>
+</div>
+</div>
+<!-- Filter & Sort Rail (Scrollable Pills) -->
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar py-0.5">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">calendar_today</span>
+<span>Date</span>
+</button>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">sort_by_alpha</span>
+<span>Name</span>
+</button>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">payments</span>
+<span>Price</span>
+</button>
+<div class="h-4 w-px bg-surface-container-highest flex-shrink-0 mx-0.5"></div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm flex-shrink-0">
+<span class="material-symbols-outlined text-[15px]">arrow_downward</span>
+<span>Desc</span>
+</button>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">tune</span>
+<span>Filters</span>
+</button>
+</div>
+<!-- Interactive State View Switcher (Live Catalog vs Empty vs Loading) -->
+<div class="bg-surface-container-low p-1 rounded-xl flex items-center justify-between text-center">
+<button class="flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm transition-all" id="viewActiveBtn" onclick="switchState('active')">
+      Catalog (4)
+    </button>
+<button class="flex-1 py-1.5 rounded-lg text-on-surface-variant font-label-sm text-label-sm transition-all" id="viewEmptyBtn" onclick="switchState('empty')">
+      Empty State
+    </button>
+<button class="flex-1 py-1.5 rounded-lg text-on-surface-variant font-label-sm text-label-sm transition-all" id="viewSkeletonBtn" onclick="switchState('loading')">
+      Loading Shimmer
+    </button>
+</div>
+<!-- SECTION 1: Active Product Cards -->
+<div class="space-y-space-sm" id="catalogState">
+<!-- Card 1: Notebook Pro -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-3 min-w-0">
+<img class="w-14 h-14 rounded-lg object-cover bg-surface-container flex-shrink-0" data-alt="Minimalist titanium laptop open at forty-five degrees against cool slate studio tabletop soft edge ambient illumination" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKQwZA9VP1pofjdBdLp3DuRnfm4TKunEtZJqaaGIowJ4lAlo3dckxmQpjQSraTIfVNW2ojAM_dZ6q-9upCeCctqbH5uLMvaGzvo1-cZ1n-dT9v3J0TaRCpZCDDwoCJrXfpV0o8jzOTQQzascSOkH1-zg8SRQRhmR1ozSPDPhes1RcvA6RQHTKB1OgZKTT7FpZDUwpn3BpZ-OiHGZNcRtlW4yKTQlH4hDbeL3FcdFYvAtrYedDH2iQe"/>
+<div class="min-w-0 flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Notebook Pro</span>
+<span class="px-1.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed-variant font-code-badge text-code-badge rounded">SKU-9921</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">High-performance workstation</span>
+</div>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-error active:bg-error-container rounded-lg transition-colors flex-shrink-0" onclick="openDeleteModal('Notebook Pro')">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">$</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">1,499.00</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-secondary-container bg-secondary-fixed/50 px-2 py-0.5 rounded-full font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>14 in stock</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Mechanical Keyboard -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-3 min-w-0">
+<img class="w-14 h-14 rounded-lg object-cover bg-surface-container flex-shrink-0" data-alt="Custom mechanical keyboard matte deep indigo chassis textured PBT keycaps clean angled top lighting tech layout" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnctrniPSY0bqhkhwAlS9SGB9Hx5i-myLWJHIU4tu17ylih8mxzenSacWXpZFYbSYh8kLlQQylsT5CTiLAnZuQVSHH8FL6KshJWpiz0P63IL4RSAqkGj0WXj6nMTIL6G9bQyYLhP5QXy0A3RLxuD82gfTT4VbhlS7pBCB16oUHli5DuYV11frgIsHWsrT63bW7MLSN6tulmB0CDaxmbTaAjy54uXrhe89WTuM4yar9W31L8km3d9TT"/>
+<div class="min-w-0 flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Mechanical Keyboard</span>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-on-surface-variant font-code-badge text-code-badge rounded">SKU-4402</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Hot-swappable mechanical keyboard</span>
+</div>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-error active:bg-error-container rounded-lg transition-colors flex-shrink-0" onclick="openDeleteModal('Mechanical Keyboard')">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">$</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">129.00</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-secondary-container bg-secondary-fixed/50 px-2 py-0.5 rounded-full font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>38 in stock</span>
+</div>
+</div>
+</div>
+<!-- Card 3: 4K Monitor -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-3 min-w-0">
+<img class="w-14 h-14 rounded-lg object-cover bg-surface-container flex-shrink-0" data-alt="Edge to edge 4K studio display screen architectural desktop stand minimal soft studio workspace gradient glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl5xkwgYrke8vJcPb2Jf5xU8piKDlm3cNzB6_OdAUafwudareQz82vCbpiaNqU3ozTLUPbHqQ3rn-hEP8VWqIBwwPRAf9tzjsnK9TqwVJoISj7mntIT5cPrTU5FXZZlV_f7ceuccMY0J0EJCaT07yzqMW_pVVWLSUWpzCNSScn--y6tIoDQSmZILOQK8M4EOHIr9avFohBFX3GVV8mSrfiNZpMpv08L9V6tqeUj9S3n5NkMg2GAfHd"/>
+<div class="min-w-0 flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">4K Monitor</span>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-on-surface-variant font-code-badge text-code-badge rounded">SKU-8104</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">27-inch high-resolution display</span>
+</div>
+</div>
+<button class="p-2 text-error bg-error-container/40 rounded-lg transition-colors flex-shrink-0" onclick="openDeleteModal('4K Monitor')">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">$</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">699.00</span>
+</div>
+<div class="flex items-center gap-1.5 text-tertiary-container bg-tertiary-fixed/60 px-2 py-0.5 rounded-full font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Low Stock (3)</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Wireless Headphones -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-3 min-w-0">
+<img class="w-14 h-14 rounded-lg object-cover bg-surface-container flex-shrink-0" data-alt="Sleek graphite noise cancelling headphones angled side view resting on architectural aluminum pedestal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW6Rl7cw-b0mrQBrUIBll8ORuDThzckMD_Vth_wmMQEbLBaGU3rCh1sXOnl-dCJQR5t5XrTeZRfq_14h3fA1Gegf2LYUC39nINorCnNeAdhCe1Z8tjTEbnXfmttwWalVGcTFtIE8PoGROicx6qNVJD_uQmrhQWRvslmqo7-wb9vMDOGW7qY2tfA-W4YPpfWgE17XI8ybOpGs-W7evfW6E7hnLjFUNbPutpz0HgevJ3aAaRSwtrp2ju"/>
+<div class="min-w-0 flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Wireless Headphones</span>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-on-surface-variant font-code-badge text-code-badge rounded">SKU-3199</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Noise-cancelling over-ear</span>
+</div>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-error active:bg-error-container rounded-lg transition-colors flex-shrink-0" onclick="openDeleteModal('Wireless Headphones')">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">$</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">249.00</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-secondary-container bg-secondary-fixed/50 px-2 py-0.5 rounded-full font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>22 in stock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 2: Empty State Card (Hidden by default) -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-xl shadow-sm text-center flex-col items-center justify-center py-12 space-y-space-sm" id="emptyState">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center text-primary mb-1">
+<span class="material-symbols-outlined text-[32px]">manage_search</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">No products match your search query</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-[260px]">
+      We couldn't locate any inventory under the active filters. Try refining your keywords or resetting filters.
+    </p>
+<button class="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-surface-container text-primary font-label-sm text-label-sm rounded-xl active:bg-surface-container-high transition-colors" onclick="switchState('active')">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+<span>Reset active filters</span>
+</button>
+</div>
+<!-- SECTION 3: Shimmer Loading Skeleton State (Hidden by default) -->
+<div class="hidden space-y-space-sm" id="loadingState">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm space-y-space-sm animate-pulse">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-surface-container rounded-lg flex-shrink-0"></div>
+<div class="flex-1 space-y-2 min-w-0">
+<div class="h-4 bg-surface-container rounded w-3/5"></div>
+<div class="h-3 bg-surface-container-high rounded w-4/5"></div>
+</div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<div class="h-5 bg-surface-container rounded w-20"></div>
+<div class="h-5 bg-surface-container-high rounded-full w-24"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm space-y-space-sm animate-pulse">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-surface-container rounded-lg flex-shrink-0"></div>
+<div class="flex-1 space-y-2 min-w-0">
+<div class="h-4 bg-surface-container rounded w-2/4"></div>
+<div class="h-3 bg-surface-container-high rounded w-3/4"></div>
+</div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<div class="h-5 bg-surface-container rounded w-16"></div>
+<div class="h-5 bg-surface-container-high rounded-full w-20"></div>
+</div>
+</div>
+</div>
+<!-- Touch-Friendly Pagination Footer -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Inventory Count</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Total: 8 items</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container-low text-outline opacity-50 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<span class="font-label-sm text-label-sm text-on-surface px-1">Page 1 of 2</span>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container text-on-surface active:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Delete Confirmation Bottom Sheet Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-end justify-center bg-inverse-surface/40 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none" id="deleteModal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-t-2xl p-space-lg shadow-xl transform translate-y-full transition-transform duration-300 ease-out space-y-space-md pb-safe" id="deleteModalSheet">
+<div class="w-12 h-1 bg-surface-container-highest rounded-full mx-auto mb-2"></div>
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">warning</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface" id="deleteTargetTitle">Delete 4K Monitor?</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            This cannot be undone. The catalog entry, sales linkages, and inventory metrics will be permanently archived.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm pt-2">
+<button class="flex-1 py-2.5 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md active:bg-surface-container-high transition-colors" onclick="closeDeleteModal()">
+          Cancel
+        </button>
+<button class="flex-1 py-2.5 rounded-xl bg-error text-on-error font-label-md text-label-md shadow-sm active:opacity-90 transition-opacity" onclick="confirmDeletion()">
+          Delete
+        </button>
+</div>
+</div>
+</div>
+<!-- Add Product Bottom Sheet / Creation Drawer Modal -->
+<div class="fixed inset-0 z-50 flex items-end justify-center bg-inverse-surface/40 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none" id="addModal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-t-2xl p-space-lg shadow-xl transform translate-y-full transition-transform duration-300 ease-out space-y-space-md pb-safe" id="addModalSheet">
+<div class="w-12 h-1 bg-surface-container-highest rounded-full mx-auto mb-1"></div>
+<div class="flex items-center justify-between">
+<div>
+<span class="font-eyebrow-caps text-eyebrow-caps text-primary tracking-wider uppercase">New Inventory</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Add Catalog Product</h2>
+</div>
+<button class="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container" onclick="closeAddModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="space-y-space-sm">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Product Title</label>
+<input class="w-full px-3 py-2 bg-surface-container-low text-on-surface rounded-xl font-body-sm text-body-sm focus:outline-none focus:bg-surface-container" placeholder="e.g. Studio Display" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Price (USD)</label>
+<input class="w-full px-3 py-2 bg-surface-container-low text-on-surface rounded-xl font-body-sm text-body-sm focus:outline-none focus:bg-surface-container" placeholder="499.00" type="number"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Initial Stock</label>
+<input class="w-full px-3 py-2 bg-surface-container-low text-on-surface rounded-xl font-body-sm text-body-sm focus:outline-none focus:bg-surface-container" placeholder="25" type="number"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-sm pt-2">
+<button class="flex-1 py-2.5 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md" onclick="closeAddModal()">
+          Cancel
+        </button>
+<button class="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-sm" onclick="closeAddModal()">
+          Save Product
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function switchState(state) {
+    const catalog = document.getElementById('catalogState');
+    const empty = document.getElementById('emptyState');
+    const loading = document.getElementById('loadingState');
+    const activeBtn = document.getElementById('viewActiveBtn');
+    const emptyBtn = document.getElementById('viewEmptyBtn');
+    const skeletonBtn = document.getElementById('viewSkeletonBtn');
+
+    [catalog, empty, loading].forEach(el => el.classList.add('hidden'));
+    [activeBtn, emptyBtn, skeletonBtn].forEach(btn => {
+      btn.className = 'flex-1 py-1.5 rounded-lg text-on-surface-variant font-label-sm text-label-sm transition-all';
+    });
+
+    if (state === 'active') {
+      catalog.classList.remove('hidden');
+      activeBtn.className = 'flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm transition-all';
+    } else if (state === 'empty') {
+      empty.classList.remove('hidden');
+      empty.classList.add('flex');
+      emptyBtn.className = 'flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm transition-all';
+    } else if (state === 'loading') {
+      loading.classList.remove('hidden');
+      skeletonBtn.className = 'flex-1 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm transition-all';
+    }
+  }
+
+  function openDeleteModal(title) {
+    document.getElementById('deleteTargetTitle').innerText = 'Delete ' + title + '?';
+    const modal = document.getElementById('deleteModal');
+    const sheet = document.getElementById('deleteModalSheet');
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    sheet.classList.remove('translate-y-full');
+  }
+
+  function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    const sheet = document.getElementById('deleteModalSheet');
+    sheet.classList.add('translate-y-full');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+  }
+
+  function confirmDeletion() {
+    closeDeleteModal();
+  }
+
+  const triggerAdd = document.getElementById('triggerAddModal');
+  const addModal = document.getElementById('addModal');
+  const addSheet = document.getElementById('addModalSheet');
+
+  triggerAdd.addEventListener('click', () => {
+    addModal.classList.remove('pointer-events-none', 'opacity-0');
+    addSheet.classList.remove('translate-y-full');
+  });
+
+  function closeAddModal() {
+    addSheet.classList.add('translate-y-full');
+    addModal.classList.add('opacity-0', 'pointer-events-none');
+  }
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-label-md"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center w-20 h-11 rounded-xl transition-colors text-primary font-label-md" data-path="products" href="#"><span class="material-symbols-outlined text-[24px]">inventory_2</span><span class="font-label-sm text-label-sm mt-0.5">Products</span></a><a class="flex flex-col items-center justify-center w-20 h-11 rounded-xl text-on-surface-variant transition-colors" data-path="users" href="#"><span class="material-symbols-outlined text-[24px]">group</span><span class="font-label-sm text-label-sm mt-0.5">Users</span></a><a class="flex flex-col items-center justify-center w-20 h-11 rounded-xl text-on-surface-variant transition-colors" data-path="account" href="#"><span class="material-symbols-outlined text-[24px]">security</span><span class="font-label-sm text-label-sm mt-0.5">Account</span></a></div></nav></body></html>
