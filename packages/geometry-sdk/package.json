@@ -1,0 +1,28 @@
+{
+  "name": "geometry-sdk",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./adapters": {
+      "@org/source": "./src/adapters.ts",
+      "types": "./src/adapters.ts",
+      "import": "./src/adapters.ts",
+      "default": "./src/adapters.ts"
+    },
+    "./components": {
+      "@org/source": "./src/components.ts",
+      "types": "./src/components.ts",
+      "import": "./src/components.ts",
+      "default": "./src/components.ts"
+    }
+  },
+  "nx": {
+    "name": "geometry-sdk",
+    "tags": ["scope:geometry-sdk", "type:facade"]
+  },
+  "dependencies": {
+    "adapters": "0.0.1"
+  }
+}

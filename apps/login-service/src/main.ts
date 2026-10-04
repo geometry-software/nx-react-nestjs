@@ -1,0 +1,19 @@
+import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import {
+  configureNestApplication,
+  configureSwaggerAdapter,
+  readPort,
+} from 'geometry-sdk/adapters';
+import { AuthModule } from './app/auth.module';
+async function bootstrap() {
+  const app = await NestFactory.create(AuthModule);
+  configureNestApplication(app);
+  configureSwaggerAdapter(app, { title: 'Auth service' });
+  const port = readPort(process.env.AUTH_PORT, 3001);
+  await app.listen(port);
+  Logger.log(
+    `Auth API: http://localhost:${port}/api · Swagger: http://localhost:${port}/docs`,
+  );
+}
+void bootstrap();

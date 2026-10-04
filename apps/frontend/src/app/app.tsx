@@ -1,50 +1,63 @@
 import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppShell } from '@nx-react-nestjs/components/app/app-shell';
-import { useRequestActivity } from './request-activity';
-import { useI18n } from './i18n';
+import { AppShell } from './components/app-shell';
+import { isLanguage, languageOptions } from './locales/i18n.ts';
+import { useI18n } from './locales/i18n.ts';
+import { useRequestActivity } from './hooks/use-request-activity';
 
 const Products = lazy(() =>
-  import('../pages/products').then(({ Products }) => ({ default: Products })),
+  import('./domains/products/pages/products.page.tsx').then(({ Products }) => ({
+    default: Products,
+  })),
 );
 const Users = lazy(() =>
-  import('../pages/users').then(({ Users }) => ({ default: Users })),
+  import('./domains/users/pages/users.page.tsx').then(({ Users }) => ({
+    default: Users,
+  })),
 );
 const Shipping = lazy(() =>
-  import('../pages/shipping').then(({ Shipping }) => ({ default: Shipping })),
+  import('./domains/shipping/pages/shipping.page.tsx').then(({ Shipping }) => ({
+    default: Shipping,
+  })),
 );
 const Invoices = lazy(() =>
-  import('../pages/invoices').then(({ Invoices }) => ({ default: Invoices })),
+  import('./domains/invoices/pages/invoices.page.tsx').then(({ Invoices }) => ({
+    default: Invoices,
+  })),
 );
 const Auth = lazy(() =>
-  import('../pages/auth').then(({ Auth }) => ({ default: Auth })),
+  import('./domains/auth/pages/auth.page.tsx').then(({ Auth }) => ({
+    default: Auth,
+  })),
 );
-const Info = lazy(() =>
-  import('../pages/info').then(({ Info }) => ({ default: Info })),
+const DataFlow = lazy(() =>
+  import('./domains/project-info/pages/data-flow.page.tsx').then(({ DataFlow }) => ({
+    default: DataFlow,
+  })),
 );
-const ProjectInfo = lazy(() =>
-  import('../pages/swagger').then(({ ProjectInfo }) => ({
-    default: ProjectInfo,
+const Swagger = lazy(() =>
+  import('./domains/project-info/pages/swagger.page.tsx').then(({ Swagger }) => ({
+    default: Swagger,
   })),
 );
 const Installation = lazy(() =>
-  import('../pages/installation').then(({ Installation }) => ({
-    default: Installation,
-  })),
+  import('./domains/project-info/pages/installation.page.tsx').then(
+    ({ Installation }) => ({ default: Installation }),
+  ),
 );
 const DesignSystem = lazy(() =>
-  import('../pages/design-system').then(({ DesignSystem }) => ({
-    default: DesignSystem,
-  })),
+  import('./domains/project-info/pages/design-system.page.tsx').then(
+    ({ DesignSystem }) => ({ default: DesignSystem }),
+  ),
 );
 export function App() {
-  const { language, setLanguage, t } = useI18n();
+  const { language, setLanguage, translate } = useI18n();
   const requestActivity = useRequestActivity();
   return (
     <Suspense
       fallback={
         <div className="grid min-h-screen place-items-center text-muted-foreground">
-          {t('app.loading')}
+          {translate('app.loading')}
         </div>
       }
     >
@@ -54,8 +67,11 @@ export function App() {
             <AppShell
               i18n={{
                 language,
-                setLanguage,
-                t: (key, values) => t(key as never, values),
+                languages: languageOptions,
+                setLanguage: (value) => {
+                  if (isLanguage(value)) setLanguage(value);
+                },
+                translate,
               }}
               requestActivity={requestActivity}
             />
@@ -75,8 +91,8 @@ export function App() {
           <Route path="shipping" element={<Shipping />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="auth" element={<Auth />} />
-          <Route path="info" element={<Info />} />
-          <Route path="swagger" element={<ProjectInfo />} />
+          <Route path="info" element={<DataFlow />} />
+          <Route path="swagger" element={<Swagger />} />
           <Route path="installation" element={<Installation />} />
           <Route
             path="project-info"

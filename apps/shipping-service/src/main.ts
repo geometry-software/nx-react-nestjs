@@ -2,15 +2,15 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   configureNestApplication,
-  configureSwagger,
+  configureSwaggerAdapter,
   readPort,
-} from '@nx-react-nestjs/backend-utils';
-import { AppModule } from './app/app.module';
+} from 'geometry-sdk/adapters';
+import { ShippingModule } from './app/shipping.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(ShippingModule);
   configureNestApplication(app);
-  configureSwagger(app, { title: 'Shipping service' });
+  configureSwaggerAdapter(app, { title: 'Shipping service' });
   const port = readPort(process.env.SHIPPING_PORT, 3004);
   await app.listen(port);
   Logger.log(

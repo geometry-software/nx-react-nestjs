@@ -1,0 +1,37 @@
+{
+  "name": "components",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/components/index.js",
+  "module": "./dist/components/index.js",
+  "types": "./dist/components/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@org/source": "./src/components/index.ts",
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    },
+    "./components": {
+      "@org/source": "./src/components/index.ts",
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    }
+  },
+  "dependencies": {
+    "cn": "^0.2.6",
+    "lucide-react": "^1.43.0",
+    "radix-ui": "^1.6.7",
+    "react": "^19.0.0"
+  },
+  "nx": {
+    "name": "components",
+    "tags": [
+      "type:lib",
+      "scope:geometry-sdk",
+      "layer:components"
+    ]
+  }
+}

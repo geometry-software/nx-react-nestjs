@@ -1,0 +1,103 @@
+import { CheckCircle2 } from 'lucide-react';
+import type { SubmitEventHandler } from 'react';
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  EntityDialog,
+  FormField,
+  FormInput,
+  Textarea,
+} from 'geometry-sdk/components';
+import type { Product } from '../models/products.model';
+import type { Translate } from '@/app/locales/locale';
+
+export function ProductFormDialog({
+  busy,
+  editTarget,
+  error,
+  invalidFields,
+  onClose,
+  onSubmit,
+  open,
+  translate,
+}: {
+  busy: boolean;
+  editTarget: Product | null;
+  error: string;
+  invalidFields: ReadonlySet<string>;
+  onClose: () => void;
+  onSubmit: SubmitEventHandler<HTMLFormElement>;
+  open: boolean;
+  translate: Translate;
+}) {
+  return (
+    <EntityDialog
+      description={translate('products.modalDescription')}
+      onClose={onClose}
+      open={open}
+      title={translate(editTarget ? 'products.editTitle' : 'products.modalTitle')}
+    >
+      <form
+        className="grid gap-4"
+        key={editTarget?.id ?? 'create-product'}
+        onSubmit={onSubmit}
+      >
+        <FormInput
+          defaultValue={editTarget?.name}
+          invalid={invalidFields.has('name')}
+          label={translate('products.productName')}
+          name="name"
+          placeholder={translate('products.namePlaceholder')}
+          requiredLabel={translate('common.required')}
+        />
+        <FormInput
+          defaultValue={editTarget?.price}
+          invalid={invalidFields.has('price')}
+          label={translate('products.priceUsd')}
+          min="0"
+          name="price"
+          placeholder="$ 1299.00"
+          step="0.01"
+          type="number"
+        />
+        <FormInput
+          defaultValue={editTarget?.quantity ?? 0}
+          invalid={invalidFields.has('quantity')}
+          label={translate('products.quantity')}
+          min="0"
+          name="quantity"
+          step="1"
+          type="number"
+        />
+        <FormField
+          invalid={invalidFields.has('description')}
+          label={translate('products.description')}
+        >
+          <Textarea
+            aria-invalid={invalidFields.has('description')}
+            defaultValue={editTarget?.description}
+            name="description"
+            placeholder={translate('products.descriptionPlaceholder')}
+          />
+        </FormField>
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <Button
+          loading={busy}
+          loadingLabel={translate(
+            editTarget ? 'common.saving' : 'products.publishing',
+          )}
+          size="lg"
+          type="submit"
+        >
+          <CheckCircle2 />
+          {translate(editTarget ? 'common.saveChanges' : 'products.publish')}
+        </Button>
+      </form>
+    </EntityDialog>
+  );
+}

@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
   const servicePorts = {
     auth: Number(env.AUTH_PORT || 3001),
     products: Number(env.PRODUCTS_PORT || 3002),
-    users: Number(env.USERS_PORT || 3003),
     shipping: Number(env.SHIPPING_PORT || 3004),
     invoices: Number(env.INVOICES_PORT || 3005),
   };
@@ -31,6 +30,7 @@ export default defineConfig(({ mode }) => {
     __SERVICE_PORTS__: JSON.stringify(servicePorts),
   },
   resolve: {
+    conditions: ['@org/source'],
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
     },

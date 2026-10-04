@@ -1,10 +1,10 @@
 # NX Monorepo
 
-An Nx workspace containing a React application, five independent NestJS microservices, and shared frontend and backend packages. The project demonstrates domain-owned APIs, service-to-service communication, URL-driven tables, Mongo Cloud persistence, invoice processing, and shipment tracking.
+An Nx workspace containing a multilingual end-to-end React application, four independent NestJS microservices, shared components, and backend adapters. The project demonstrates domain-owned APIs, service-to-service communication, URL-driven tables and other data flow.
 
 ## Technology
 
-Nx 23 · React 19 · Vite · RTK Query · Zod · Tailwind CSS 4 · ShadCN/Radix · NestJS 12 · TypeORM · Mongo Cloud · Axios · Swagger/OpenAPI · Vitest
+Nx 23 · React 19 · Vite · RTK Query · Zod · Tailwind CSS 4 · ShadCN/Radix · NestJS 12 · TypeORM · MongoDB Atlas · Swagger/OpenAPI · Vitest
 
 ## Getting started
 
@@ -14,39 +14,38 @@ Install a supported version of [Node.js](https://nodejs.org/en/download), downlo
 npm start
 ```
 
-This single command installs dependencies, starts the complete workspace, and opens [http://localhost:4201](http://localhost:4201). The application uses a demonstration Mongo Cloud environment, so MongoDB does not need to be installed locally.
-
-Multilingual end-user instructions are available inside the application under **Project Info → Installation**.
+This single command installs dependencies, starts the complete workspace, and opens [http://localhost:4201](http://localhost:4201). The application uses a demonstration MongoDB Atlas environment, so database does not need to be installed locally.
 
 ## Workspace
 
 ```text
 apps/
   frontend/          React application                                :4201
-  auth-service/      registration, login, and JWT                     :3001
+    src/app/domains/ domain-first frontend modules
+    services/        shared RTK Query API, cache, and activity services
+      */pages/       domain route presentation and layout
+      */feature/     domain hooks, state, effects, and event handlers
+      */service/     domain RTK Query endpoint definitions
+  login-service/     authentication, users, roles, and JWT            :3001
   products-service/  catalog, pricing, and stock                      :3002
-  users-service/     user directory and roles                         :3003
   shipping-service/  shipments, recipients, and tracking              :3004
   invoices-service/  invoice lifecycle and stock confirmation         :3005
 
 packages/
-  components/        shared frontend design system
-  backend-utils/     shared backend contracts and infrastructure
+  geometry-sdk/      public SDK facade
+    components/      shared frontend design system
+    adapters/        shared infrastructure and repository adapters
 
 scripts/
-  start-open.mjs     installs, starts, and opens the workspace
-  seed.sh            loads demonstration products and users
+  open-demo.mjs      installs, starts, and opens the workspace
+  mock.sh            loads demonstration products and users
 ```
 
 ## Microservices
 
-### Auth service
+### Login service
 
-Owns registration and login. It validates credentials, stores authentication records in its own cloud database, and issues JWTs. Catalog and operational domains are intentionally not protected by this service in the demonstration application.
-
-### Users service
-
-Owns the user directory and roles. It provides independent CRUD and bulk deletion and supplies user snapshots to Shipping.
+Owns registration, login, the user directory, and roles. It validates credentials, stores authentication records, issues JWTs, and exposes user read, update, single-delete, and bulk-delete operations. The user directory does not expose a create endpoint; account creation remains part of registration. Authentication records and the user directory retain separate MongoDB Atlas databases and repositories inside the same service. Catalog and operational domains are intentionally not protected by this service in the demonstration application.
 
 ### Products service
 
@@ -58,7 +57,7 @@ Creates invoices from selected products and stores immutable product name, descr
 
 ### Shipping service
 
-Creates shipments from confirmed invoices and a selected user. It resolves invoice snapshots from Invoices, resolves the preparer from Users, generates a tracking number after creation, and stores recipient, invoice, product-line, and tracking snapshots. It also exposes location lookup and tracking refresh operations.
+Creates shipments from confirmed invoices and a selected user. It resolves invoice snapshots from Invoices, resolves the preparer from the Auth user directory, generates a tracking number after creation, and stores recipient, invoice, product-line, and tracking snapshots. It also exposes location lookup and tracking refresh operations.
 
 Shipping is the only service that communicates with third-party providers:
 
@@ -71,70 +70,56 @@ All services have their own controllers, domain services, DTOs, entities, and Mo
 
 ```text
 React :4201
-  ├─► Auth :3001 ──────────────────────────────► TypeORM ─► Cloud / nx_auth
+  ├─► Login :3001 ─┬────────────────────────────► TypeORM ─► Cloud / nx_auth
+  │                └────────────────────────────► TypeORM ─► Cloud / nx_users
   ├─► Products :3002 ──────────────────────────► TypeORM ─► Cloud / nx_products
-  ├─► Users :3003 ─────────────────────────────► TypeORM ─► Cloud / nx_users
-  ├─► Invoices :3005 ─► Products :3002 ────────► TypeORM ─► Cloud / nx_invoices
-  └─► Shipping :3004
-        ├─► Invoices :3005
-        ├─► Users :3003
-        ├─► countries.dev
-        ├─► Dummy Package Place Service
-        └──────────────────────────────────────► TypeORM ─► Cloud / nx_shipping
+  ├─► Invoices :3005 ──────────────────────────► TypeORM ─► Cloud / nx_invoices
+  └─► Shipping :3004 ──────────────────────────► TypeORM ─► Cloud / nx_shipping
+    ├─► countries.dev
+    └─► Dummy Package Place Service
 ```
 
-Each domain owns its data. Cross-service reads use explicit HTTP contracts rather than shared database access. Products remain the stock authority, Invoices owns billing snapshots and state, and Shipping owns delivery snapshots and external integrations.
+Each domain owns its data. Auth owns credentials and the user directory through separate repositories. Cross-service reads use explicit HTTP contracts rather than shared database access. Products remain the stock authority, Invoices owns billing snapshots and state, and Shipping owns delivery snapshots and external integrations.
 
-The frontend keeps table pagination, search, sorting, and page size in the browser URL. URL changes drive RTK Query requests. Create, update, delete, and bulk-delete mutations update the relevant RTK Query cache directly instead of issuing an unnecessary follow-up GET.
+The frontend uses domain-first modules under `src/app/domains`. Every section owns a `pages` presentation layer and a `feature` hook layer; API-backed domains additionally own a `service` with injected RTK Query endpoints. The shared `domains/api.ts` defines the single base API, HTTP request methods, service-port resolution, and cache helpers. Table pagination, search, sorting, and page size remain in the browser URL, and URL changes drive RTK Query requests. Create, update, delete, and bulk-delete mutations update the relevant RTK Query cache directly instead of issuing an unnecessary follow-up GET.
 
 ## Shared packages
 
-### `@nx-react-nestjs/components`
+### `geometry-sdk/components`
 
 The frontend design-system package has two levels:
 
 - `components/ui` contains ShadCN/Radix primitives such as Button, Input, Dialog, AlertDialog, Select, Table, Checkbox, RadioGroup, Tabs, and Tooltip.
-- `components/app` composes those primitives into application components: AppShell, Autocomplete, DataTable, EntityDialog, ConfirmDialog, FilterSelect, LanguageSwitcher, OperationNotice, ButtonLoader, and DataFlowDiagram.
+- `components/app` composes those primitives into application components: Autocomplete, DataTable, Entity and Confirm dialogs.
 
-Application pages use these components instead of duplicating markup and styles. Translation state and request activity remain in the frontend because they are application behavior rather than view primitives.
+Application pages use these components instead of duplicating markup and styles. Translation configuration and request activity remain in the frontend because they are application behavior rather than view primitives.
 
-### `@nx-react-nestjs/backend-utils`
+React context providers and shared frontend API response types are exposed through `geometry-sdk/components` together with the rest of the frontend package.
 
-The backend package is organized by responsibility:
+### `geometry-sdk/adapters`
+
+The shared infrastructure package is organized by responsibility. Nest services use its Swagger adapter to publish OpenAPI documentation, while the frontend uses the browser-safe Swagger adapter to resolve those documentation endpoints:
 
 ```text
-src/lib/
-  bootstrap/       shared Nest application, port, and TypeORM setup
-  service-discovery/
-                   internal service origins resolved from ports
-  crud/models/     pagination, bulk-delete, identifier, and result contracts
-  repositories/
-    models/        Mongo repository configuration
-    implementations/
-                   reusable MongoCrudRepository implementation
-  external-api/
-    models/        ExternalHttpClient port, request, retry, and activity models
-    implementations/
-                   AxiosExternalHttpClient and ExternalApiModule
-  swagger/
-    models/        Swagger configuration contracts
-    implementations/
-                   shared Swagger setup
+src/adapters/
+  core/            framework-independent repository contracts
+  http/            Axios client, external HTTP models, and service discovery
+  file/            structured filesystem adapter
+  memory/          process-local repository adapter
+  mongodb/         TypeORM MongoDB adapters and reusable CRUD repository
+  firebase/        Firestore repository adapter
+  supabase/        PostgREST repository adapter
+  nest/            NestJS bootstrap, DTOs, DI, and Swagger integration
+  pdf/             PDF report adapters
+  swagger/         browser documentation URL adapte, separated from Nest bootstrap and is explicitly enabled by every service.
 ```
-
-`AxiosExternalHttpClient` centralizes outbound request IDs, timeouts, response-size limits, safe retries with backoff, cancellation, activity timing, and consistent NestJS upstream errors. Domain adapters provide only provider-specific URLs and response mapping.
-
-`MongoCrudRepository` centralizes common MongoDB CRUD and list behavior while each service retains a domain-named Mongo repository responsible for entity mapping and allowed search/sort fields.
-
-Swagger configuration is separate from Nest bootstrap and is explicitly enabled by every service.
 
 ## API documentation
 
 | Service | API | Swagger |
 | --- | --- | --- |
-| Auth | `http://localhost:3001/api/auth` | `http://localhost:3001/docs` |
+| Login | `http://localhost:3001/api/auth`, `http://localhost:3001/api/users` | `http://localhost:3001/docs` |
 | Products | `http://localhost:3002/api/products` | `http://localhost:3002/docs` |
-| Users | `http://localhost:3003/api/users` | `http://localhost:3003/docs` |
 | Shipping | `http://localhost:3004/api/shippings` | `http://localhost:3004/docs` |
 | Invoices | `http://localhost:3005/api/invoices` | `http://localhost:3005/docs` |
 
@@ -164,5 +149,3 @@ npm run typecheck
 npm run lint
 npm run seed
 ```
-
-Repository-independent unit tests mock database repositories and outbound ports, so they do not require Mongo Cloud or third-party network access.
