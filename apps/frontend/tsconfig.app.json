@@ -12,13 +12,13 @@
       "vite/client"
     ],
     "rootDir": "src",
-    "baseUrl": ".",
     "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./src/*"]
     },
     "module": "esnext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true
   },
   "exclude": [
     "out-tsc",
@@ -41,9 +41,5 @@
     "eslint.config.mjs"
   ],
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
-  "references": [
-    {
-      "path": "../../packages/components/tsconfig.lib.json"
-    }
-  ]
+  "references": []
 }

@@ -1,0 +1,40 @@
+{
+  "name": "adapters",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@org/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "name": "adapters",
+    "tags": ["type:lib", "scope:geometry-sdk", "layer:adapters"]
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/config": "^12.0.0",
+    "@nestjs/swagger": "^12.0.1",
+    "@supabase/supabase-js": "^2.116.0",
+    "axios": "^1.18.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "firebase": "^12.19.0",
+    "mongodb": "^7.6.0",
+    "pdfkit": "^0.20.2",
+    "tslib": "^2.3.0",
+    "typeorm": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/pdfkit": "^0.17.6",
+    "vitest": "~4.1.0"
+  }
+}

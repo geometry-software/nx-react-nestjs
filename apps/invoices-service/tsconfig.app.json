@@ -16,5 +16,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["out-tsc", "dist", "dist-types", "src/**/*.spec.ts"],
-  "references": [{ "path": "../../packages/backend-utils/tsconfig.lib.json" }]
+  "references": []
 }

@@ -8,14 +8,13 @@
     "test": "npm exec -- nx run-many -t test",
     "typecheck": "npm exec -- nx run-many -t typecheck",
     "dev:frontend": "npm exec -- nx serve frontend",
-    "dev:auth": "npm exec -- nx serve auth-service",
+    "dev:login": "npm exec -- nx serve login-service",
     "dev:products": "npm exec -- nx serve products-service",
-    "dev:users": "npm exec -- nx serve users-service",
     "dev:shipping": "npm exec -- nx serve shipping-service",
     "dev:invoices": "npm exec -- nx serve invoices-service",
-    "dev": "npm exec -- nx run-many -t serve --projects=frontend,auth-service,products-service,users-service,shipping-service,invoices-service --parallel=6",
-    "start": "node scripts/start-open.mjs",
-    "seed": "sh scripts/seed.sh",
+    "dev": "npm exec -- nx run-many -t serve --projects=frontend,login-service,products-service,shipping-service,invoices-service --parallel=5",
+    "start": "node scripts/open-demo.mjs",
+    "mock": "sh scripts/mock.sh",
     "graph": "npm exec -- nx graph"
   },
   "private": true,
@@ -74,6 +73,7 @@
   },
   "workspaces": [
     "packages/*",
+    "packages/*/*",
     "apps/*"
   ],
   "overrides": {

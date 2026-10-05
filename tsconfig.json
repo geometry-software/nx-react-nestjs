@@ -7,26 +7,23 @@
       "path": "./apps/frontend"
     },
     {
-      "path": "./apps/auth-service"
+      "path": "./apps/login-service"
     },
     {
       "path": "./apps/products-service"
-    },
-    {
-      "path": "./apps/users-service"
-    },
-    {
-      "path": "./packages/backend-utils"
-    },
-    {
-      "path": "./packages/components"
     },
     {
       "path": "./apps/shipping-service"
     },
     {
       "path": "./apps/invoices-service"
-    }
+    },
+    {
+      "path": "./packages/geometry-sdk/adapters"
+    },
+    {
+      "path": "./packages/geometry-sdk/components"
+    },
   ],
   "compilerOptions": {}
 }
