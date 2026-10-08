@@ -1,7 +1,7 @@
 import type { AutocompleteOption } from 'geometry-sdk/components';
 import type { Translate } from '@/app/locales/locale';
 import type { useProjectInfoFeature } from './project-info.feature';
-import { DesignSystemSampleRow } from '../models/project-info.model';
+import type { DesignSystemSampleRow } from '../models/project-info.model';
 
 type DesignSystemFeatureAdapter = ReturnType<typeof useProjectInfoFeature>;
 

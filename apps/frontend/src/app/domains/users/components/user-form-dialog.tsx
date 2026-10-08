@@ -1,7 +1,5 @@
 import type { SubmitEvent } from 'react';
 import {
-  Alert,
-  AlertDescription,
   Button,
   EntityDialog,
   FilterSelect,
@@ -13,7 +11,6 @@ import type { User } from '../models/users.model';
 
 export function UserFormDialog({
   editTarget,
-  error,
   invalidFields,
   fieldErrors,
   isUpdating,
@@ -25,7 +22,6 @@ export function UserFormDialog({
   translate,
 }: {
   editTarget: User | null;
-  error: string;
   invalidFields: ReadonlySet<string>;
   fieldErrors: Record<string, string>;
   isUpdating: boolean;
@@ -89,11 +85,6 @@ export function UserFormDialog({
             value={role}
           />
         </FormField>
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
         <Button
           className="justify-self-end px-6"
           loading={isUpdating}

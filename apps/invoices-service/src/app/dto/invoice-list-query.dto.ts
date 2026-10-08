@@ -1,11 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsIn, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 import { CrudListQueryDto } from 'geometry-sdk/adapters';
-import { invoiceStatuses, type InvoiceStatus } from '../entities/invoice.entity';
+import { InvoiceStatus } from '../entities/invoice.entity';
 
 export class InvoiceListQueryDto extends CrudListQueryDto {
-  @ApiPropertyOptional({ enum: invoiceStatuses })
+  @ApiPropertyOptional({ enum: InvoiceStatus })
   @IsOptional()
-  @IsIn(invoiceStatuses)
+  @IsEnum(InvoiceStatus)
   status?: InvoiceStatus;
 }

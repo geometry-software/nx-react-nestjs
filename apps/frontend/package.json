@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "geometry-sdk": "*",
+    "firebase": "^12.19.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@reduxjs/toolkit": "^2.12.0",
     "lucide-react": "^1.43.0",

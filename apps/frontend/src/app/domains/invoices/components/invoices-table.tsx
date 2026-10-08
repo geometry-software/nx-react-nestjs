@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from 'geometry-sdk/components';
 import { tableLabels } from '@/app/utils/i18n-labels';
+import { getPageCount } from '@/app/utils/pagination';
 import { formatCurrency, formatDateTime } from '@/app/utils/format-value';
 import type { Invoice } from '../models/invoices.model';
 import type { Page } from '@/app/models/api.model';
@@ -86,8 +87,8 @@ export function InvoicesTable({
       render: (invoice: Invoice) => formatDateTime(invoice.updatedAt, language),
     },
     {
-      label: '',
-      className: 'w-44',
+      label: translate('common.actions'),
+      className: 'w-44 text-right',
       render: (invoice: Invoice) => (
         <div className="flex justify-end gap-1">
           <InvoiceAction
@@ -131,7 +132,7 @@ export function InvoicesTable({
       loading={loading}
       onPage={onPageChange}
       page={data?.meta.page ?? 1}
-      pages={data?.meta.totalPages ?? 1}
+      pages={getPageCount(data?.meta)}
       pageSize={data?.meta.limit ?? pageSize}
       rows={data?.data ?? []}
       total={data?.meta.total ?? 0}

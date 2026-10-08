@@ -1,30 +1,22 @@
-import { ObjectId } from "mongodb";
-import type { MongoRepository } from "typeorm";
-import { createMemoryAdapter } from "geometry-sdk/adapters";
-import { createMongoAdapter } from "geometry-sdk/adapters";
+import { randomUUID } from 'node:crypto';
+import { createMemoryAdapter, MemoryAdapter } from 'geometry-sdk/adapters';
+import { describe, expect, it } from 'vitest';
 import {
-  repositoryConformanceSuite,
+  adapterConformanceSuite,
   type ConformanceItem,
   type CreateConformanceItem,
   type UpdateConformanceItem,
-} from "./repository-conformance.js";
+} from './adapter-conformance.js';
 
 const options = {
-  entityName: "Item",
-  searchableFields: ["name"],
-  sortableFields: ["name", "quantity", "createdAt"],
-  defaultSort: "createdAt",
+  entityName: 'Item',
 } as const;
 
-repositoryConformanceSuite("Memory", () =>
-  createMemoryAdapter<
-    ConformanceItem,
-    CreateConformanceItem,
-    UpdateConformanceItem
-  >({
+adapterConformanceSuite('Memory', () =>
+  createMemoryAdapter<ConformanceItem, CreateConformanceItem, UpdateConformanceItem>({
     options,
     getId: (value) => value.id,
-    createId: () => new ObjectId().toHexString(),
+    createId: () => randomUUID(),
     create: (value, { id, now }) => ({
       ...value,
       id,
@@ -37,119 +29,37 @@ repositoryConformanceSuite("Memory", () =>
       updatedAt: now,
     }),
   }),
-  { paginated: false },
 );
 
-repositoryConformanceSuite("MongoDB", () =>
-  createMongoAdapter<
-    ConformanceItem,
-    CreateConformanceItem,
-    UpdateConformanceItem
-  >({
-    options,
-    repository: createMongoRepositoryDouble(),
-    create: (value) => value,
-  }),
-);
+describe('MemoryAdapter additional public methods', () => {
+  function createAdapter() {
+    return new MemoryAdapter<ConformanceItem, CreateConformanceItem, UpdateConformanceItem>({
+      source: 'items',
+      options: { entityName: 'Item' },
+      initialData: [{ id: 'first', name: 'Alpha', quantity: 2, createdAt: new Date(0), updatedAt: new Date(0) }],
+      getId: (value) => value.id,
+      createId: () => 'second',
+      create: (value, { id, now }) => ({ ...value, id, createdAt: now, updatedAt: now }),
+      update: (current, value, now) => ({ ...current, ...value, updatedAt: now }),
+    });
+  }
 
-function createMongoRepositoryDouble(): MongoRepository<ConformanceItem> {
-  const values = new Map<string, ConformanceItem>();
-  let filter: Record<string, unknown> = {};
-  let sortField = "createdAt";
-  let direction = -1;
-  let offset = 0;
-  let pageSize = 10;
-  const cursor = {
-    sort(field: string, value: number) {
-      sortField = field;
-      direction = value;
-      return this;
-    },
-    skip(value: number) {
-      offset = value;
-      return this;
-    },
-    limit(value: number) {
-      pageSize = value;
-      return this;
-    },
-    async toArray() {
-      return matchingValues(values, filter)
-        .sort(
-          (left, right) =>
-            compare(
-              (left as unknown as Record<string, unknown>)[sortField],
-              (right as unknown as Record<string, unknown>)[sortField],
-            ) * direction,
-        )
-        .slice(offset, offset + pageSize);
-    },
-  };
-  const repository = {
-    createEntityCursor(value: Record<string, unknown>) {
-      filter = value;
-      return cursor;
-    },
-    async countDocuments(value: Record<string, unknown>) {
-      return matchingValues(values, value).length;
-    },
-    create(value: CreateConformanceItem) {
-      const now = new Date();
-      return {
-        ...value,
-        id: new ObjectId().toHexString(),
-        createdAt: now,
-        updatedAt: now,
-      };
-    },
-    async save(value: ConformanceItem) {
-      values.set(String(value.id), value);
-      return value;
-    },
-    async findOneBy(value: { id: ObjectId }) {
-      return values.get(value.id.toHexString()) ?? null;
-    },
-    async remove(value: ConformanceItem) {
-      values.delete(String(value.id));
-      return value;
-    },
-    async deleteMany(value: { _id: { $in: ObjectId[] } }) {
-      let deletedCount = 0;
-      for (const id of value._id.$in) {
-        deletedCount += values.delete(id.toHexString()) ? 1 : 0;
-      }
-      return { deletedCount };
-    },
-  };
-  return repository as unknown as MongoRepository<ConformanceItem>;
-}
+  it('getSource returns the initial collection', () => {
+    expect(createAdapter().getSource()).toBe('items');
+  });
 
-function matchingValues(
-  values: Map<string, ConformanceItem>,
-  filter: Record<string, unknown>,
-): ConformanceItem[] {
-  const alternatives = filter.$or as
-    Record<string, { $regex: string; $options: string }>[] | undefined;
-  return [...values.values()].filter(
-    (value) =>
-      !alternatives ||
-      alternatives.some((alternative) => {
-        const [field, condition] = Object.entries(alternative)[0];
-        return new RegExp(condition.$regex, condition.$options).test(
-          String((value as unknown as Record<string, unknown>)[field]),
-        );
-      }),
-  );
-}
+  it('setSource isolates collections by source name', async () => {
+    const adapter = createAdapter();
+    adapter.setSource('archive');
+    expect(adapter.getSource()).toBe('archive');
+    await expect(adapter.findAll()).resolves.toEqual([]);
+    adapter.setSource('items');
+    await expect(adapter.findAll()).resolves.toHaveLength(1);
+  });
 
-function compare(left: unknown, right: unknown): number {
-  const leftValue = comparableValue(left);
-  const rightValue = comparableValue(right);
-  if (leftValue === rightValue) return 0;
-  return leftValue < rightValue ? -1 : 1;
-}
-
-function comparableValue(value: unknown): string | number {
-  if (value instanceof Date) return value.getTime();
-  return typeof value === "number" ? value : String(value);
-}
+  it('compute receives a stable snapshot of the selected collection', async () => {
+    const adapter = createAdapter();
+    await expect(adapter.compute((records) => records.reduce((sum, item) => sum + item.quantity, 0)))
+      .resolves.toBe(2);
+  });
+});

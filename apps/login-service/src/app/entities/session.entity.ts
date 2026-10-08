@@ -1,31 +1,33 @@
-import type { EntityId } from 'geometry-sdk/adapters';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ObjectIdColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-@Entity({ name: 'accounts' })
 export class Session {
-  @ObjectIdColumn()
-  id!: EntityId;
+  @ApiProperty({ type: String })
+  id!: string;
 
-  @Column()
-  name!: string;
+  @ApiPropertyOptional({ type: String, nullable: true })
+  userId!: string | null;
 
-  @Column()
-  email!: string;
+  @ApiPropertyOptional({ type: String, nullable: true })
+  name!: string | null;
 
-  @Column()
-  passwordHash!: string;
+  @ApiPropertyOptional({ type: String, nullable: true })
+  email!: string | null;
 
-  @CreateDateColumn()
+  @ApiPropertyOptional({ writeOnly: true, nullable: true })
+  passwordHash?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  firebaseUid?: string | null;
+
+  @ApiPropertyOptional({ writeOnly: true, nullable: true })
+  firebaseIdToken?: string | null;
+
+  @ApiPropertyOptional({ type: Date, nullable: true })
+  verifiedAt!: Date | null;
+
+  @ApiProperty()
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @ApiProperty()
   updatedAt!: Date;
 }
-
-export type Account = Session;

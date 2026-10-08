@@ -1,5 +1,4 @@
-import type { RepositorySortOrder } from "../core/query.js";
-import type { CollectionApi, RepositoryReadPort } from "../core/repository.js";
+import type { Pageable, PageableCollectionAdapter, CollectionSortOrder } from "../core/api.js";
 
 export type FirebaseWhereOperator =
   | "<"
@@ -25,7 +24,7 @@ export type FirebaseRepositoryQuery<TData, TId = string> = {
   limit: number;
   filters?: readonly FirebaseFilter<TData>[];
   orderBy?: Extract<keyof TData, string>;
-  order?: RepositorySortOrder;
+  order?: CollectionSortOrder;
   next?: TId;
   before?: TId;
 };
@@ -43,24 +42,21 @@ export type FirebaseCursorResult<TData, TId = string> = {
   pageInfo: FirebasePageInfo<TId>;
 };
 
-export interface FirebaseQueryPort<TData, TId = string>
-  extends RepositoryReadPort<
-    TData,
-    TId,
-    FirebaseRepositoryQuery<TData, TId>,
-    FirebaseCursorResult<TData, TId>
-  > {}
+export type FirebaseQueryPort<TData, TId = string> = Pageable<
+  TData,
+  FirebaseRepositoryQuery<TData, TId>,
+  FirebaseCursorResult<TData, TId>
+>;
 
-export interface FirebaseRepositoryAdapterPort<
+export interface FirestoreAdapterPort<
   TData,
   TCreate = TData,
   TUpdate = TCreate,
   TId = string,
-> extends CollectionApi<
+> extends PageableCollectionAdapter<
     TData,
-    TCreate,
     TUpdate,
-    TId,
     FirebaseRepositoryQuery<TData, TId>,
-    FirebaseCursorResult<TData, TId>
-  > {}
+    FirebaseCursorResult<TData, TId>,
+    TId
+  > { create(value: TData | TCreate): Promise<TData>; }

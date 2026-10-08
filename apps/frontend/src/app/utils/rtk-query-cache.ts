@@ -12,10 +12,6 @@ export function addEntityToFirstPage<T extends Entity>(
     draft.data.splice(draft.meta.limit);
   }
   draft.meta.total += 1;
-  draft.meta.totalPages = Math.max(
-    1,
-    Math.ceil(draft.meta.total / draft.meta.limit),
-  );
 }
 
 export function replaceEntityInPage<T extends Entity>(
@@ -34,8 +30,4 @@ export function removeEntityFromPage<T extends Entity>(
   if (index < 0) return;
   draft.data.splice(index, 1);
   draft.meta.total = Math.max(0, draft.meta.total - 1);
-  draft.meta.totalPages = Math.max(
-    1,
-    Math.ceil(draft.meta.total / draft.meta.limit),
-  );
 }

@@ -84,8 +84,8 @@ export const appRoutes = [
   },
   {
     id: 'auth',
-    path: 'auth',
-    href: '/auth',
+    path: 'login',
+    href: '/login',
     name: 'nav.auth',
     group: 'authorization',
     groupName: 'nav.authorization',

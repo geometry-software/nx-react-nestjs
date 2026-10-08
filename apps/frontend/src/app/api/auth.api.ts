@@ -7,4 +7,6 @@ const authCollectionUrl = `${apiService.getServiceOrigin('login')}/api/auth`;
 export const authApi = {
   login: `${authCollectionUrl}/login`,
   register: `${authCollectionUrl}/register`,
-} satisfies Record<'login' | 'register', string>;
+  session: `${authCollectionUrl}/session`,
+  verifyEmail: `${authCollectionUrl}/verify-email`,
+} satisfies Record<'login' | 'register' | 'session' | 'verifyEmail', string>;

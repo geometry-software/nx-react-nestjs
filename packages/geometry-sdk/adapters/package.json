@@ -1,6 +1,6 @@
 {
   "name": "adapters",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "main": "./dist/index.js",
@@ -17,7 +17,11 @@
   },
   "nx": {
     "name": "adapters",
-    "tags": ["type:lib", "scope:geometry-sdk", "layer:adapters"]
+    "tags": [
+      "type:lib",
+      "scope:geometry-sdk",
+      "layer:adapters"
+    ]
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
@@ -29,12 +33,16 @@
     "class-validator": "^0.15.1",
     "firebase": "^12.19.0",
     "mongodb": "^7.6.0",
+    "nodemailer": "^10.0.16",
     "pdfkit": "^0.20.2",
+    "pg": "^8.16.3",
     "tslib": "^2.3.0",
     "typeorm": "^1.1.1"
   },
   "devDependencies": {
+    "@types/nodemailer": "^8.0.2",
     "@types/pdfkit": "^0.17.6",
+    "@types/pg": "^8.23.1",
     "vitest": "~4.1.0"
   }
 }

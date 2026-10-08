@@ -47,7 +47,7 @@ export function AppShell({
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const { translate } = i18n;
-  const isAuth = location.pathname === '/auth';
+  const isAuth = location.pathname === '/login' || location.pathname === '/auth';
   const breadcrumb = getBreadcrumb(location.pathname);
 
   if (isAuth) {
@@ -92,7 +92,11 @@ export function AppShell({
             if (!groupName) return null;
 
             return (
-              <NavGroup key={group} label={translate(groupName)}>
+              <NavGroup
+                href={group === 'project' ? '/info' : undefined}
+                key={group}
+                label={translate(groupName)}
+              >
                 {routes.map(({ href, icon: Icon, id, name, styles }) => (
                   <NavLink className={navClass} key={id} to={href}>
                     <Icon className={styles.icon} />
@@ -146,7 +150,7 @@ export function AppShell({
             <NavLink
               aria-label={translate('nav.auth')}
               className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              to="/auth"
+              to="/login"
             >
               <Avatar>
                 <AvatarFallback>
@@ -216,16 +220,27 @@ function Brand({ compact = false }: { compact?: boolean }) {
 
 function NavGroup({
   label,
+  href,
   children,
 }: {
   label: string;
+  href?: string;
   children: ReactNode;
 }) {
   return (
     <div className="mb-4 grid gap-1">
-      <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </p>
+      {href ? (
+        <NavLink
+          className="rounded px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          to={href}
+        >
+          {label}
+        </NavLink>
+      ) : (
+        <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </p>
+      )}
       {children}
     </div>
   );

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Put,
   Post,
@@ -14,14 +15,13 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  BulkDeleteDto,
-  CrudListQueryDto,
-} from 'geometry-sdk/adapters';
+import { BulkDeleteDto, BulkDeleteResultDto, DeleteResultDto } from 'geometry-sdk/adapters';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ResolveProductsDto } from './dto/resolve-products.dto';
 import { DeductProductStockDto } from './dto/deduct-product-stock.dto';
 import { Product } from './entities/product.entity';
+import { ProductListQueryDto } from './dto/product-list-query.dto';
+import { ProductListResponseDto, ProductPageResponseDto } from './dto/product-response.dto';
 import { ProductsService } from './products.service';
 
 @ApiTags('products')
@@ -33,57 +33,59 @@ export class ProductsController {
   @ApiOperation({
     summary: 'List products with URL-driven filters and pagination',
   })
-  @ApiOkResponse({ description: 'Paginated products' })
-  findAll(@Query() query: CrudListQueryDto) {
-    return this.productsService.findAll(query);
+  @ApiOkResponse({ description: 'Paginated products', type: ProductPageResponseDto })
+  public findAll(@Query() query: ProductListQueryDto): Promise<ProductPageResponseDto> {
+    return this.productsService.findPage(query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get product by id' })
   @ApiOkResponse({ type: Product })
-  findOne(@Param('id') id: string) {
+  public findOne(@Param('id') id: string): Promise<Product> {
     return this.productsService.findOne(id);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create product' })
   @ApiCreatedResponse({ type: Product })
-  create(@Body() dto: CreateProductDto) {
+  public create(@Body() dto: CreateProductDto): Promise<Product> {
     return this.productsService.create(dto);
   }
 
   @Post('resolve')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Resolve products for another domain service' })
-  @ApiOkResponse({ description: 'Resolved product snapshots', type: [Product] })
-  async resolveMany(@Body() dto: ResolveProductsDto) {
+  @ApiOkResponse({ description: 'Resolved product snapshots', type: ProductListResponseDto })
+  public async resolveMany(@Body() dto: ResolveProductsDto): Promise<ProductListResponseDto> {
     return { data: await this.productsService.resolveMany(dto.ids) };
   }
 
   @Post('stock/deduct')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Deduct product quantities for a confirmed invoice' })
-  @ApiOkResponse({ description: 'Products with updated quantities', type: [Product] })
-  async deductStock(@Body() dto: DeductProductStockDto) {
+  @ApiOkResponse({ description: 'Products with updated quantities', type: ProductListResponseDto })
+  public async deductStock(@Body() dto: DeductProductStockDto): Promise<ProductListResponseDto> {
     return { data: await this.productsService.deductStock(dto.items) };
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update product' })
   @ApiOkResponse({ type: Product })
-  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+  public update(@Param('id') id: string, @Body() dto: UpdateProductDto): Promise<Product> {
     return this.productsService.update(id, dto);
   }
 
   @Delete('bulk')
   @ApiOperation({ summary: 'Delete multiple products' })
-  @ApiOkResponse({ description: 'Number of deleted products' })
-  removeMany(@Body() dto: BulkDeleteDto) {
+  @ApiOkResponse({ description: 'Number of deleted products', type: BulkDeleteResultDto })
+  public removeMany(@Body() dto: BulkDeleteDto): Promise<BulkDeleteResultDto> {
     return this.productsService.removeMany(dto.ids);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete product' })
-  @ApiOkResponse({ description: 'Deleted' })
-  remove(@Param('id') id: string) {
+  @ApiOkResponse({ description: 'Deleted', type: DeleteResultDto })
+  public remove(@Param('id') id: string): Promise<DeleteResultDto> {
     return this.productsService.remove(id);
   }
 }

@@ -32,7 +32,6 @@ export function Invoices() {
       />
       <InvoiceEditDialog
         editTarget={feature.editTarget}
-        error={feature.error}
         fieldErrors={feature.fieldErrors}
         isUpdating={feature.isUpdating}
         onClose={feature.closeEditDialog}
@@ -40,7 +39,6 @@ export function Invoices() {
         translate={feature.translate}
       />
       <InvoiceStatusDialogs
-        actionError={feature.actionError}
         cancelOpen={feature.cancelOpen}
         cancelTargetName={feature.cancelTargetName}
         confirmOpen={feature.confirmOpen}

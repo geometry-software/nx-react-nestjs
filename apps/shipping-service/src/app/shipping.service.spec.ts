@@ -1,11 +1,11 @@
-import type { CrudListQueryDto } from 'geometry-sdk/adapters';
+import type { ShipmentListQueryDto } from './dto/shipment-list-query.dto';
 import { describe, expect, it, vi } from 'vitest';
 import type { CreateShipmentDto } from './dto/shipment.dto';
 import { ShippingService } from './shipping.service';
 
 describe('ShippingService', () => {
   const repository = {
-    findAll: vi.fn(),
+    findPage: vi.fn(),
     findOne: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
@@ -74,16 +74,16 @@ describe('ShippingService', () => {
   });
 
   it('delegates persistence operations to its repository', async () => {
-    const query = { page: 1, limit: 10 } as CrudListQueryDto;
-    repository.findAll.mockResolvedValue({ data: [], meta: {} });
+    const query = { page: 1, limit: 10 } as ShipmentListQueryDto;
+    repository.findPage.mockResolvedValue({ data: [], meta: {} });
     repository.remove.mockResolvedValue({ deleted: true });
     repository.removeMany.mockResolvedValue({ deleted: 2 });
 
-    await service.findAll(query);
+    await service.findPage(query);
     await service.remove('shipment-1');
     await service.removeMany(['shipment-1', 'shipment-2']);
 
-    expect(repository.findAll).toHaveBeenCalledWith(query);
+    expect(repository.findPage).toHaveBeenCalledWith(query);
     expect(repository.remove).toHaveBeenCalledWith('shipment-1');
     expect(repository.removeMany).toHaveBeenCalledWith([
       'shipment-1',

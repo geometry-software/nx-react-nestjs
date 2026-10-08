@@ -1,155 +1,104 @@
-# NX Monorepo
+# Nx Monorepo
 
-An Nx workspace containing a multilingual end-to-end React application, four independent NestJS microservices, shared components, and backend adapters. The project demonstrates domain-owned APIs, service-to-service communication, URL-driven tables and other data flow.
+This Nx workspace contains a React frontend, four independent NestJS services, a shared UI package, and a shared infrastructure adapter package. Products owns catalog stock; Invoices owns billing snapshots and invoice state; Shipping owns delivery snapshots and tracking; Login owns users, authentication, and sessions. Services communicate through HTTP contracts rather than reading one another's databases.
 
-## Technology
+## Start the workspace
 
-Nx 23 · React 19 · Vite · RTK Query · Zod · Tailwind CSS 4 · ShadCN/Radix · NestJS 12 · TypeORM · MongoDB Atlas · Swagger/OpenAPI · Vitest
-
-## Getting started
-
-Install a supported version of [Node.js](https://nodejs.org/en/download), download and unpack the [repository](https://github.com/geometry-software/nx-react-nestjs), then open a terminal in the extracted directory.
+Use a supported Node.js version and configure the root `.env`. Apply the [Login `Session` SQL migration](apps/login-service/sql/create-session.sql) to the configured PostgreSQL database before the first Login request. Then, from the workspace root:
 
 ```bash
 npm start
 ```
 
-This single command installs dependencies, starts the complete workspace, and opens [http://localhost:4201](http://localhost:4201). The application uses a demonstration MongoDB Atlas environment, so database does not need to be installed locally.
+`npm start` installs dependencies when needed, starts the frontend and four services through the Nx development targets, waits for their pages, and opens the frontend at `http://localhost:4201`. The user starts this command from their own console; repository agents follow the startup and opt-in verification policies in [AGENTS.md](AGENTS.md).
 
-## Workspace
+## Applications and business ownership
 
-```text
-apps/
-  frontend/          React application                                :4201
-    src/app/domains/ domain-first frontend modules
-    services/        shared RTK Query API, cache, and activity services
-      */pages/       domain route presentation and layout
-      */feature/     domain hooks, state, effects, and event handlers
-      */service/     domain RTK Query endpoint definitions
-  login-service/     authentication, users, roles, and JWT            :3001
-  products-service/  catalog, pricing, and stock                      :3002
-  shipping-service/  shipments, recipients, and tracking              :3004
-  invoices-service/  invoice lifecycle and stock confirmation         :3005
+| Application | Default port | Owns | Details |
+| --- | ---: | --- | --- |
+| [Frontend](apps/frontend/README.md) | 4201 | React routes, forms, URL-driven lists, and UI composition | Domain-first frontend guide |
+| [Login](apps/login-service/README.md) | 3001 | Mongo users, SQL sessions, registration, login, and email verification | Service structure and auth flow |
+| [Products](apps/products-service/README.md) | 3002 | Catalog products and available stock | Native Mongo adapter and stock rules |
+| [Shipping](apps/shipping-service/README.md) | 3004 | Shipments, recipient and invoice snapshots, tracking | ORM Mongo and external HTTP clients |
+| [Invoices](apps/invoices-service/README.md) | 3005 | Invoice snapshots and `pending`/`complete`/`rejected` lifecycle | ORM Mongo and Products HTTP integration |
 
-packages/
-  geometry-sdk/      public SDK facade
-    components/      shared frontend design system
-    adapters/        shared infrastructure and repository adapters
+The main business path is: Products supplies product snapshots to Invoices; confirming an invoice asks Products to deduct stock; Shipping accepts only complete invoices and an active user from Login. Shipping stores its own copy of invoice, product-line, and preparer data. The frontend calls the owning APIs and generates invoice PDFs from returned invoice data.
 
-scripts/
-  open-demo.mjs      installs, starts, and opens the workspace
-  mock.sh            loads demonstration products and users
-```
-
-## Frontend
-
-The React frontend organizes catalog, invoices, shipping, users, and authentication by domain. Each domain connects its pages and components to feature hooks and RTK Query services, while shared providers and the `geometry-sdk/components` package supply common application behavior and UI controls. See the [frontend README](apps/frontend/README.md) for the folder layout, business flows, and a guide to adding a domain.
-
-## Microservices
-
-### Login service
-
-Owns registration, login, the user directory, and roles. It validates credentials, stores authentication records, issues JWTs, and exposes user read, update, single-delete, and bulk-delete operations. The user directory does not expose a create endpoint; account creation remains part of registration. Authentication records and the user directory retain separate MongoDB Atlas databases and repositories inside the same service. Catalog and operational domains are intentionally not protected by this service in the demonstration application.
-
-### Products service
-
-Owns product names, descriptions, inventory identifiers, prices, and available quantities. It provides CRUD, bulk deletion, product snapshot resolution, and atomic stock deduction used when an invoice is confirmed.
-
-### Invoices service
-
-Creates invoices from selected products and stores immutable product name, description, price, and quantity snapshots. An invoice moves through `pending`, `complete`, or `rejected` states. Confirming an invoice asks Products to validate and deduct stock; cancelling it marks the invoice as rejected. Invoice printing is initiated by the frontend from the stored invoice data.
-
-### Shipping service
-
-Creates shipments from confirmed invoices and a selected user. It resolves invoice snapshots from Invoices, resolves the preparer from the Auth user directory, generates a tracking number after creation, and stores recipient, invoice, product-line, and tracking snapshots. It also exposes location lookup and tracking refresh operations.
-
-Shipping is the only service that communicates with third-party providers:
-
-- `countries.dev` supplies country and dependent city suggestions.
-- `Dummy Package Place Service` supplies demonstration tracking events with synthetic dates and statuses. It is not a real carrier integration.
-
-All services have their own controllers, domain services, DTOs, entities, and Mongo-specific repositories. There is no runtime Core microservice.
-
-## Data flow
+Login follows a separate identity path. The Firebase browser SDK restores or creates an anonymous user and sends its current ID token to Login. Login verifies the token with Firebase before finding or creating a SQL `Session` for that UID. Registration creates a Mongo `User`, fills that SQL session, dispatches a verification email, and issues an application JWT. Email/password login creates another SQL session. Firebase SDK persistence is managed in the browser; the application does not store its anonymous refresh token in its own cookie or `localStorage` key.
 
 ```text
-React :4201
-  ├─► Login :3001 ─┬────────────────────────────► TypeORM ─► Cloud / nx_auth
-  │                └────────────────────────────► TypeORM ─► Cloud / nx_users
-  ├─► Products :3002 ──────────────────────────► TypeORM ─► Cloud / nx_products
-  ├─► Invoices :3005 ──────────────────────────► TypeORM ─► Cloud / nx_invoices
-  └─► Shipping :3004 ──────────────────────────► TypeORM ─► Cloud / nx_shipping
-    ├─► countries.dev
-    └─► Dummy Package Place Service
+Browser / React
+  ├── Login :3001 ──────► Mongo users
+  │       ├──────────────► Supabase PostgreSQL Session
+  │       ├──────────────► Firebase Auth token verification
+  │       └──────────────► Google SMTP confirmation email
+  ├── Products :3002 ───► Mongo products
+  ├── Invoices :3005 ───► Mongo invoices ───HTTP──► Products
+  └── Shipping :3004 ───► Mongo shipments ──HTTP──► Invoices / Login
+          ├───────────────────────────────────────► countries.dev
+          └───────────────────────────────────────► Dummy Package Place
 ```
 
-Each domain owns its data. Auth owns credentials and the user directory through separate repositories. Cross-service reads use explicit HTTP contracts rather than shared database access. Products remain the stock authority, Invoices owns billing snapshots and state, and Shipping owns delivery snapshots and external integrations.
+There is no runtime Core service. `packages/geometry-sdk` provides reusable code, not a shared business database.
 
-The frontend uses domain-first modules under `src/app/domains`. Every section owns a `pages` presentation layer and a `feature` hook layer; API-backed domains additionally own a `service` with injected RTK Query endpoints. The shared `domains/api.ts` defines the single base API, HTTP request methods, service-port resolution, and cache helpers. Table pagination, search, sorting, and page size remain in the browser URL, and URL changes drive RTK Query requests. Create, update, delete, and bulk-delete mutations update the relevant RTK Query cache directly instead of issuing an unnecessary follow-up GET.
+## Microservice structure and adapter wiring
 
-## Shared packages
-
-### `geometry-sdk/components`
-
-The frontend design-system package has two levels:
-
-- `components/ui` contains ShadCN/Radix primitives such as Button, Input, Dialog, AlertDialog, Select, Table, Checkbox, RadioGroup, Tabs, and Tooltip.
-- `components/app` composes those primitives into application components: Autocomplete, DataTable, Entity and Confirm dialogs.
-
-Application pages use these components instead of duplicating markup and styles. Translation configuration and request activity remain in the frontend because they are application behavior rather than view primitives.
-
-React context providers and shared frontend API response types are exposed through `geometry-sdk/components` together with the rest of the frontend package.
-
-### `geometry-sdk/adapters`
-
-The shared infrastructure package is organized by responsibility. Nest services use its Swagger adapter to publish OpenAPI documentation, while the frontend uses the browser-safe Swagger adapter to resolve those documentation endpoints:
+The four service READMEs document their concrete files. A new service should first define its data ownership and HTTP dependencies, then use this structure as a reference rather than copying every folder:
 
 ```text
-src/adapters/
-  core/            framework-independent repository contracts
-  http/            Axios client, external HTTP models, and service discovery
-  file/            structured filesystem adapter
-  memory/          process-local repository adapter
-  mongodb/         TypeORM MongoDB adapters and reusable CRUD repository
-  firebase/        Firestore repository adapter
-  supabase/        PostgREST repository adapter
-  nest/            NestJS bootstrap, DTOs, DI, and Swagger integration
-  pdf/             PDF report adapters
-  swagger/         browser documentation URL adapte, separated from Nest bootstrap and is explicitly enabled by every service.
+apps/<service>/
+  README.md                 business flow, dependencies, configuration
+  src/main.ts               Nest bootstrap, /api prefix, validation, error filter, Swagger
+  src/app/<domain>.module.ts Nest imports, controllers, and provider bindings
+  src/app/<domain>.controller.ts
+  src/app/<domain>.service.ts
+  src/app/entities/         domain persistence and response models
+  src/app/dto/              validated request and documented response models
+  src/app/providers/        adapter connection, source, token, mapping, URL settings
+  src/app/adapters/         domain-facing persistence or email/Firebase wrappers
+  src/app/utils/            pure calculations and normalization
+  sql/                     explicit SQL schema scripts, when needed
 ```
 
-## API documentation
+`main.ts` bootstraps one Nest module. That module imports `ConfigModule` and the required SDK modules from `geometry-sdk/adapters`, such as `MongoAdapterModule.forRootAsync(configuration)`, `SqlAdapterModule.forRootAsync(configuration)`, `FireAuthAdapterModule.forRootAsync(configuration)`, or `HttpAdapterModule`. It lists controllers and binds domain adapters, services, and external client contracts as Nest providers.
 
-| Service | API | Swagger |
-| --- | --- | --- |
-| Login | `http://localhost:3001/api/auth`, `http://localhost:3001/api/users` | `http://localhost:3001/docs` |
-| Products | `http://localhost:3002/api/products` | `http://localhost:3002/docs` |
-| Shipping | `http://localhost:3004/api/shippings` | `http://localhost:3004/docs` |
-| Invoices | `http://localhost:3005/api/invoices` | `http://localhost:3005/docs` |
+Each file in `providers/` configures an SDK adapter rather than implementing business logic. A database configuration selects the implementation and connection string, identifies the collection or table `source`, registers an injection token and entity mapping, and sets search, sort, and pagination options where relevant. Product Mongo uses `implementation: 'native'`; Login users, Invoices, and Shipping use Mongo ORM; Login sessions use SQL ORM with the Supabase dialect. SQL schema synchronization is disabled, so SQL changes need explicit scripts.
 
-All Swagger interfaces are also available in the frontend under **Project Info → Swagger**.
+A class in the service's `adapters/` injects the configured SDK adapter by token and presents domain-facing persistence operations to the service. The service orchestrates reads, rules, and writes; the controller translates HTTP DTOs into service calls and declares Swagger response models. Put side-effect-free transformations in `utils/`. For cross-service calls, define a local contract, implement it with the shared HTTP module, and bind it in the Nest module. Invoices uses a configured Products HTTP adapter; Shipping binds its invoice, user, geography, and tracking contracts to HTTP clients. A service does not import another service's repository or database connection.
 
-## Environment
+For a new microservice, add its own README, update this application table and the frontend service-origin configuration if the browser calls it, and follow the applicable Nx scaffolding guidance in [AGENTS.md](AGENTS.md). Keep new repository and service methods' access modifiers explicit.
 
-The root `.env` contains only service ports, MongoDB connection strings, `NODE_ENV`, and `JWT_SECRET`. Internal service URLs are derived from those ports. In the browser, API origins use the current page protocol and hostname, so the same build works on localhost or a remote host without duplicated URL variables. Included credentials exist only so the demonstration workspace starts after download. Use managed secrets and disable TypeORM schema synchronization in production.
+## Shared packages and frontend
 
-## Nx commands
+`packages/geometry-sdk/components` contains reusable UI primitives, application controls, hooks, and providers. `packages/geometry-sdk/adapters` contains the collection and pagination contracts, native and ORM Mongo adapters, native and ORM SQL adapters, Firebase Auth and Firestore adapters, HTTP integration, email, file, memory, Supabase JS, error handling, and Swagger setup. See the [adapter README](packages/geometry-sdk/adapters/README.md) and [component README](packages/geometry-sdk/components/README.md) for their public APIs.
+
+The frontend lives under `apps/frontend/src/app`: `api/` builds service URLs; `domains/` owns pages, feature hooks, validation, and RTK Query endpoints; `services/` holds shared API and Firebase-auth client services; `providers.tsx` composes application-wide providers; `utils/` contains shared calculations and PDF generation. Its [README](apps/frontend/README.md) explains the domain flow and how to add a frontend domain.
+
+## Configuration
+
+The root `.env` supplies configuration to all applications. Keep credentials there and out of source files.
+
+| Concern | Environment variables |
+| --- | --- |
+| Service ports | `LOGIN_PORT`, `PRODUCTS_PORT`, `SHIPPING_PORT`, `INVOICES_PORT` |
+| Mongo connections | `USERS_MONGODB_URI`, `PRODUCTS_MONGODB_URI`, `INVOICES_MONGODB_URI`, `SHIPPING_MONGODB_URI` |
+| SQL sessions | `LOGIN_SUPABASE_SQL_URI`; apply `apps/login-service/sql/create-session.sql` |
+| Login JWT | `JWT_SECRET` |
+| Firebase anonymous identity | `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID`, and the other `FIREBASE_*` project settings; enable Anonymous in Firebase Auth |
+| Registration email | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `FRONTEND_PUBLIC_URL` |
+| Internal HTTP overrides | `PRODUCTS_SERVICE_URL`, `INVOICES_SERVICE_URL`, `LOGIN_SERVICE_URL`; otherwise clients use the configured local service ports |
+
+## API documentation and Nx
+
+Each service exposes Swagger at `/docs`: [Login](http://localhost:3001/docs), [Products](http://localhost:3002/docs), [Shipping](http://localhost:3004/docs), and [Invoices](http://localhost:3005/docs). The frontend also links them under **Project Info → Swagger**.
+
+Use the workspace package manager and Nx for project tasks:
 
 ```bash
-npm exec nx show projects
-npm exec nx graph
-npm exec nx run <project>:build
-npm exec nx run <project>:test
-npm exec nx run-many -t build
+npm exec nx -- show projects
+npm exec nx -- show project products-service
+npm exec nx -- run products-service:build
+npm exec nx -- run products-service:test
 ```
 
-Convenience commands:
-
-```bash
-npm run dev
-npm run build
-npm test
-npm run typecheck
-npm run lint
-npm run seed
-```
+These are command examples, not automatic verification steps. Follow [AGENTS.md](AGENTS.md) before running checks or application startup.

@@ -1,6 +1,4 @@
 import {
-  Alert,
-  AlertDescription,
   Button,
   EntityDialog,
   FormInput,
@@ -20,7 +18,6 @@ import type { Translate } from '@/app/locales/locale';
 
 export function ProductInvoiceDialog({
   busy,
-  error,
   invoiceDescription,
   invoiceName,
   language,
@@ -37,7 +34,6 @@ export function ProductInvoiceDialog({
   validationShown,
 }: {
   busy: boolean;
-  error: string;
   invoiceDescription: string;
   invoiceName: string;
   language: Language;
@@ -162,11 +158,6 @@ export function ProductInvoiceDialog({
           </TableFooter>
         </Table>
       </div>
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
       <Button
         className="ml-auto px-6"
         loading={busy}

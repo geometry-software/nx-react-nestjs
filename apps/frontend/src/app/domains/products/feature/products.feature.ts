@@ -37,13 +37,11 @@ export function useProductsFeature() {
     isBulkDeleting,
     isCreatingInvoice,
   } = useProductInvoiceService(requestQuery, isReady);
-  const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Product | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
-  const [deleteError, setDeleteError] = useState('');
   const {
     selectedIds,
     setSelectedIds,
@@ -51,7 +49,6 @@ export function useProductsFeature() {
     removeSelectedId,
   } = useRowSelection(requestQuery);
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
-  const [bulkDeleteError, setBulkDeleteError] = useState('');
   const [reportOpen, setReportOpen] = useState(false);
   const [reportProducts, setReportProducts] = useState<Product[]>([]);
   const [reportQuantities, setReportQuantities] = useState<
@@ -60,7 +57,6 @@ export function useProductsFeature() {
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [invoiceName, setInvoiceName] = useState('');
   const [invoiceDescription, setInvoiceDescription] = useState('');
-  const [invoiceError, setInvoiceError] = useState('');
   const [invoiceValidationShown, setInvoiceValidationShown] = useState(false);
   const [search, setSearch] = useDebouncedSearchParam(params, setParams);
 
@@ -82,23 +78,19 @@ export function useProductsFeature() {
   };
 
   const openDeleteDialog = (product: Product) => {
-    setDeleteError('');
     setDeleteTarget(product);
   };
 
   const closeDeleteDialog = () => {
     setDeleteTarget(null);
-    setDeleteError('');
   };
 
   const openBulkDeleteDialog = () => {
-    setBulkDeleteError('');
     setBulkDeleteOpen(true);
   };
 
   const closeBulkDeleteDialog = () => {
     setBulkDeleteOpen(false);
-    setBulkDeleteError('');
   };
 
   const closeReportDialog = () => setReportOpen(false);
@@ -112,7 +104,6 @@ export function useProductsFeature() {
 
   const closeDialog = () => {
     setDialogOpen(false);
-    setError('');
     setInvalidFields(new Set());
     setFieldErrors({});
   };
@@ -129,7 +120,6 @@ export function useProductsFeature() {
       active: true,
     });
     if (!parsed.success) {
-      setError('');
       notifyError(translate('common.validation'));
       setFieldErrors(Object.fromEntries(parsed.error.issues.map(({ path, message }) => [path.join('.'), message])));
       setInvalidFields(
@@ -149,7 +139,7 @@ export function useProductsFeature() {
         : create({ body: parsed.data, cacheKey: requestQuery }),
     );
     if (!saved.ok) {
-      setError(translate('products.rejected'));
+      notifyError(translate('products.rejected'));
       return;
     }
     formElement.reset();
@@ -163,7 +153,7 @@ export function useProductsFeature() {
       () => remove({ id: deleteTarget.id, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setDeleteError(translate('products.rejected'));
+      notifyError(translate('products.rejected'));
       return;
     }
     notifySuccess(
@@ -171,7 +161,6 @@ export function useProductsFeature() {
     );
     removeSelectedId(deleteTarget.id);
     setDeleteTarget(null);
-    setDeleteError('');
   }
 
   async function deleteSelectedProducts() {
@@ -181,7 +170,7 @@ export function useProductsFeature() {
       () => removeMany({ ids, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setBulkDeleteError(translate('products.rejected'));
+      notifyError(translate('products.rejected'));
       return;
     }
     notifySuccess(
@@ -189,7 +178,6 @@ export function useProductsFeature() {
     );
     clearSelection();
     setBulkDeleteOpen(false);
-    setBulkDeleteError('');
   }
 
   function openProductReport() {
@@ -200,7 +188,6 @@ export function useProductsFeature() {
     );
     setInvoiceName('');
     setInvoiceDescription('');
-    setInvoiceError('');
     setInvoiceValidationShown(false);
     setReportOpen(true);
   }
@@ -219,17 +206,15 @@ export function useProductsFeature() {
   async function createSelectedInvoice() {
     setInvoiceValidationShown(true);
     if (!invoiceInput) {
-      setInvoiceError('');
       notifyError(translate('common.validation'));
       return;
     }
     setIsGeneratingReport(true);
-    setInvoiceError('');
     const invoiceResult = await executeRequest(() =>
       createInvoice(invoiceInput),
     );
     if (!invoiceResult.ok) {
-      setInvoiceError(translate('products.invoiceRejected'));
+      notifyError(translate('products.invoiceRejected'));
       setIsGeneratingReport(false);
       return;
     }
@@ -271,7 +256,6 @@ export function useProductsFeature() {
     isDeleting,
     isBulkDeleting,
     isCreatingInvoice,
-    error,
     invalidFields,
     fieldErrors,
     dialogOpen,
@@ -280,14 +264,10 @@ export function useProductsFeature() {
     setEditTarget,
     deleteTarget,
     setDeleteTarget,
-    deleteError,
-    setDeleteError,
     selectedIds,
     setSelectedIds,
     bulkDeleteOpen,
     setBulkDeleteOpen,
-    bulkDeleteError,
-    setBulkDeleteError,
     reportOpen,
     setReportOpen,
     reportProducts,
@@ -298,7 +278,6 @@ export function useProductsFeature() {
     setInvoiceName,
     invoiceDescription,
     setInvoiceDescription,
-    invoiceError,
     invoiceValidationShown,
     search,
     setSearch,

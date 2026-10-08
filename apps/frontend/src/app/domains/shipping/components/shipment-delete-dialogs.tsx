@@ -3,9 +3,7 @@ import { confirmDialogLabels } from '@/app/utils/i18n-labels';
 import type { Translate } from '@/app/locales/locale';
 
 export function ShipmentDeleteDialogs({
-  bulkDeleteError,
   bulkDeleteOpen,
-  deleteError,
   deleteOpen,
   deleteTargetName,
   isBulkDeleting,
@@ -17,9 +15,7 @@ export function ShipmentDeleteDialogs({
   selectedCount,
   translate,
 }: {
-  bulkDeleteError: string;
   bulkDeleteOpen: boolean;
-  deleteError: string;
   deleteOpen: boolean;
   deleteTargetName: string;
   isBulkDeleting: boolean;
@@ -35,7 +31,6 @@ export function ShipmentDeleteDialogs({
     <>
       <ConfirmDialog
         busy={isDeleting}
-        error={deleteError}
         itemName={deleteTargetName}
         labels={confirmDialogLabels(translate)}
         onClose={onCloseDelete}
@@ -44,7 +39,6 @@ export function ShipmentDeleteDialogs({
       />
       <ConfirmDialog
         busy={isBulkDeleting}
-        error={bulkDeleteError}
         itemName={translate('common.selectedItems', { count: selectedCount })}
         labels={confirmDialogLabels(translate)}
         onClose={onCloseBulkDelete}

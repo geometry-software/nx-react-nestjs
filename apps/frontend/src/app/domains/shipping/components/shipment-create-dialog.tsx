@@ -1,7 +1,5 @@
 import type { SubmitEvent } from 'react';
 import {
-  Alert,
-  AlertDescription,
   Autocomplete,
   Button,
   Checkbox,
@@ -29,7 +27,6 @@ export function ShipmentCreateDialog({
   citiesLoading,
   countries,
   countriesLoading,
-  error,
   fieldErrors,
   invalidFields,
   invoices,
@@ -58,7 +55,6 @@ export function ShipmentCreateDialog({
   citiesLoading: boolean;
   countries?: CountryLocation[];
   countriesLoading: boolean;
-  error: string;
   fieldErrors: Record<string, string>;
   invalidFields: ReadonlySet<string>;
   invoices?: Page<Invoice>;
@@ -244,11 +240,6 @@ export function ShipmentCreateDialog({
           </FormField>
         </div>
 
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
 
         <Button
           className="justify-self-end px-6"

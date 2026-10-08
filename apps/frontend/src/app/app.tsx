@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppShell } from './shell';
 import { isLanguage, languageOptions, useI18n } from './utils/i18n';
 import { useRequestActivity } from './hooks/use-request-activity';
 import { appRoutes } from './models/navigation.model';
+import { VerifyEmailPage } from './domains/auth/pages/verify-email.page';
 export function App() {
   const { language, setLanguage, translate } = useI18n();
   const requestActivity = useRequestActivity();
@@ -43,9 +44,11 @@ export function App() {
           {appRoutes.map(({ component: Page, id, path }) => (
             <Route key={id} path={path} element={<Page />} />
           ))}
+          <Route path="auth" element={<LegacyAuthRedirect />} />
+          <Route path="verify-email" element={<VerifyEmailPage />} />
           <Route
             path="project-info"
-            element={<Navigate to="/swagger" replace />}
+            element={<Navigate to="/info" replace />}
           />
           <Route
             path="storybook"
@@ -57,3 +60,8 @@ export function App() {
   );
 }
 export default App;
+
+function LegacyAuthRedirect() {
+  const { search } = useLocation();
+  return <Navigate to={`/login${search}`} replace />;
+}

@@ -1,7 +1,5 @@
 import type { SubmitEventHandler } from 'react';
 import {
-  Alert,
-  AlertDescription,
   Button,
   EntityDialog,
   FormField,
@@ -14,7 +12,6 @@ import type { Translate } from '@/app/locales/locale';
 export function ProductFormDialog({
   busy,
   editTarget,
-  error,
   invalidFields,
   fieldErrors,
   onClose,
@@ -24,7 +21,6 @@ export function ProductFormDialog({
 }: {
   busy: boolean;
   editTarget: Product | null;
-  error: string;
   invalidFields: ReadonlySet<string>;
   fieldErrors: Record<string, string>;
   onClose: () => void;
@@ -92,11 +88,6 @@ export function ProductFormDialog({
             placeholder={translate('products.descriptionPlaceholder')}
           />
         </FormField>
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
         <Button
           className="justify-self-end px-6"
           loading={busy}

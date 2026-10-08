@@ -36,7 +36,6 @@ export function Users() {
       />
       <UserFormDialog
         editTarget={feature.editTarget}
-        error={feature.error}
         invalidFields={feature.invalidFields}
         fieldErrors={feature.fieldErrors}
         isUpdating={feature.isUpdating}
@@ -48,9 +47,7 @@ export function Users() {
         translate={feature.translate}
       />
       <UserDeleteDialogs
-        bulkDeleteError={feature.bulkDeleteError}
         bulkDeleteOpen={feature.bulkDeleteOpen}
-        deleteError={feature.deleteError}
         deleteOpen={feature.deleteOpen}
         deleteTargetName={feature.deleteTargetName}
         isBulkDeleting={feature.isBulkDeleting}

@@ -9,6 +9,7 @@ export class SwaggerAdapter<TName extends string = string> {
     private readonly services: readonly SwaggerServiceDefinition<TName>[],
   ) {}
 
+  /** Resolves documentation URLs for all configured services. */
   getDocuments(): SwaggerDocument<TName>[] {
     return this.services.map((service) => ({
       name: service.name,

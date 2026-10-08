@@ -1,6 +1,5 @@
 import {
   CheckCircle2,
-  Info,
   LockKeyhole,
   Mail,
   ShieldCheck,
@@ -16,6 +15,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  FilterSelect,
+  FormField,
   Tabs,
   TabsList,
   TabsTrigger,
@@ -31,8 +32,9 @@ export function AuthFormCard({
   message,
   mode,
   onModeChange,
+  onRoleChange,
   onSubmit,
-  success,
+  role,
   translate,
 }: {
   busy: boolean;
@@ -41,8 +43,9 @@ export function AuthFormCard({
   message: string;
   mode: 'login' | 'register';
   onModeChange: (mode: 'login' | 'register') => void;
+  onRoleChange: (role: string) => void;
   onSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
-  success: boolean;
+  role: string;
   translate: Translate;
 }) {
   const submitLabel =
@@ -73,17 +76,38 @@ export function AuthFormCard({
 
         <form noValidate className="grid gap-4" onSubmit={onSubmit}>
           {mode === 'register' && (
-            <AuthFormField
-              autoComplete="name"
-              icon={<UserRound />}
-              error={fieldErrors.name}
-              invalid={invalidFields.has('name')}
-              label={translate('auth.fullName')}
-              name="name"
-              placeholder={translate('auth.namePlaceholder')}
-              required
-              requiredLabel={translate('common.required')}
-            />
+            <>
+              <AuthFormField
+                autoComplete="name"
+                icon={<UserRound />}
+                error={fieldErrors.name}
+                invalid={invalidFields.has('name')}
+                label={translate('auth.fullName')}
+                name="name"
+                placeholder={translate('auth.namePlaceholder')}
+                required
+                requiredLabel={translate('common.required')}
+              />
+              <FormField
+                error={fieldErrors.role}
+                invalid={invalidFields.has('role')}
+                label={translate('users.roleTier')}
+                required
+                requiredLabel={translate('common.required')}
+              >
+                <FilterSelect
+                  ariaLabel={translate('users.roleTier')}
+                  className="w-full"
+                  invalid={invalidFields.has('role')}
+                  onChange={onRoleChange}
+                  options={(['viewer', 'manager', 'admin'] as const).map((value) => ({
+                    value,
+                    label: translate(`users.${value}`),
+                  }))}
+                  value={role}
+                />
+              </FormField>
+            </>
           )}
           <AuthFormField
             autoComplete="email"
@@ -113,8 +137,8 @@ export function AuthFormCard({
           />
 
           {message && (
-            <Alert variant={success ? 'default' : 'destructive'}>
-              {success ? <CheckCircle2 /> : <Info />}
+            <Alert>
+              <CheckCircle2 />
               <AlertDescription>{message}</AlertDescription>
             </Alert>
           )}

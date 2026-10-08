@@ -61,9 +61,6 @@ export function useShippingFeature() {
   const [detailsTarget, setDetailsTarget] = useState<Shipment | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Shipment | null>(null);
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
-  const [error, setError] = useState('');
-  const [deleteError, setDeleteError] = useState('');
-  const [bulkDeleteError, setBulkDeleteError] = useState('');
   const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [search, setSearch] = useDebouncedSearchParam(params, setParams);
@@ -93,7 +90,6 @@ export function useShippingFeature() {
       delete next[path];
       return next;
     });
-    setError('');
   };
 
   const toggleInvoice = (invoiceId: string, selected: boolean) => {
@@ -114,23 +110,18 @@ export function useShippingFeature() {
   const openDetailsDialog = (shipment: Shipment) => setDetailsTarget(shipment);
   const closeDetailsDialog = () => {
     setDetailsTarget(null);
-    setError('');
   };
   const openDeleteDialog = (shipment: Shipment) => {
-    setDeleteError('');
     setDeleteTarget(shipment);
   };
   const closeDeleteDialog = () => {
     setDeleteTarget(null);
-    setDeleteError('');
   };
   const openBulkDeleteDialog = () => {
-    setBulkDeleteError('');
     setBulkDeleteOpen(true);
   };
   const closeBulkDeleteDialog = () => {
     setBulkDeleteOpen(false);
-    setBulkDeleteError('');
   };
 
   const closeCreate = () => {
@@ -142,11 +133,9 @@ export function useShippingFeature() {
     setCitySearch('');
     setInvalidFields(new Set());
     setFieldErrors({});
-    setError('');
   };
 
   const openCreate = () => {
-    setError('');
     setInvalidFields(new Set());
     setFieldErrors({});
     setRecipient({ name: '', address: '', city: '', country: '' });
@@ -175,7 +164,6 @@ export function useShippingFeature() {
       delete next[path];
       return next;
     });
-    setError('');
   };
 
   const searchCity = (value: string) => {
@@ -216,7 +204,6 @@ export function useShippingFeature() {
     };
     const parsed = createShippingValidation(translate).safeParse(candidate);
     if (!parsed.success) {
-      setError('');
       notifyError(translate('common.validation'));
       setInvalidFields(
         new Set(parsed.error.issues.map(({ path }) => path.join('.'))),
@@ -240,7 +227,7 @@ export function useShippingFeature() {
         }),
     );
     if (!result.ok) {
-      setError(
+      notifyError(
         apiErrorMessage(result.error) ?? translate('shipping.rejected'),
       );
       return;
@@ -255,7 +242,7 @@ export function useShippingFeature() {
       () => remove({ id: deleteTarget.id, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setDeleteError(translate('shipping.rejected'));
+      notifyError(translate('shipping.rejected'));
       return;
     }
     notifySuccess(
@@ -265,7 +252,6 @@ export function useShippingFeature() {
     );
     removeSelectedId(deleteTarget.id);
     setDeleteTarget(null);
-    setDeleteError('');
   }
 
   async function deleteSelectedShipments() {
@@ -275,7 +261,7 @@ export function useShippingFeature() {
       () => removeMany({ ids, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setBulkDeleteError(translate('shipping.rejected'));
+      notifyError(translate('shipping.rejected'));
       return;
     }
     notifySuccess(
@@ -283,7 +269,6 @@ export function useShippingFeature() {
     );
     clearSelection();
     setBulkDeleteOpen(false);
-    setBulkDeleteError('');
   }
 
   async function syncTracking() {
@@ -295,7 +280,7 @@ export function useShippingFeature() {
         }),
     );
     if (!result.ok) {
-      setError(
+      notifyError(
         apiErrorMessage(result.error) ??
           translate('shipping.trackingRejected'),
       );
@@ -345,12 +330,6 @@ export function useShippingFeature() {
     setDeleteTarget,
     bulkDeleteOpen,
     setBulkDeleteOpen,
-    error,
-    setError,
-    deleteError,
-    setDeleteError,
-    bulkDeleteError,
-    setBulkDeleteError,
     invalidFields,
     setInvalidFields,
     fieldErrors,

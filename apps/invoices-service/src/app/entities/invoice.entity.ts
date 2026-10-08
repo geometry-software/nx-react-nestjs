@@ -1,15 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import type { EntityId } from 'geometry-sdk/adapters';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ObjectIdColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import type { MongoDbAdapterModel } from 'geometry-sdk/adapters';
 
-export const invoiceStatuses = ['pending', 'complete', 'rejected'] as const;
-export type InvoiceStatus = (typeof invoiceStatuses)[number];
+export enum InvoiceStatus {
+  Pending = 'pending',
+  Complete = 'complete',
+  Rejected = 'rejected',
+}
 
 export type InvoiceItem = {
   productId: string;
@@ -19,37 +15,28 @@ export type InvoiceItem = {
   quantity: number;
 };
 
-@Entity({ name: 'invoices' })
-export class Invoice {
-  @ObjectIdColumn()
+export class Invoice implements MongoDbAdapterModel {
   @ApiProperty({ type: String })
-  id!: EntityId;
+  id!: string;
 
-  @Column()
   @ApiProperty()
   name!: string;
 
-  @Column()
   @ApiPropertyOptional()
   description!: string;
 
-  @Column()
-  @ApiProperty({ enum: invoiceStatuses })
+  @ApiProperty({ enum: InvoiceStatus })
   status!: InvoiceStatus;
 
-  @Column()
   @ApiProperty({ type: Array })
   items!: InvoiceItem[];
 
-  @Column()
   @ApiProperty({ minimum: 0 })
   total!: number;
 
-  @CreateDateColumn()
   @ApiProperty()
   createdAt!: Date;
 
-  @UpdateDateColumn()
   @ApiProperty()
   updatedAt!: Date;
 }

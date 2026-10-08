@@ -1,33 +1,28 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import {
-  createMongoTypeOrmOptions,
-  ExternalApiModule,
+  MongoAdapterModule,
+  HttpAdapterModule,
 } from 'geometry-sdk/adapters';
-import { Invoice } from './entities/invoice.entity';
-import { ProductsHttpClient } from './integrations/adapters/products-http.client';
-import { ProductCatalogPort } from './integrations/ports/product-catalog.port';
-import { InvoiceMongoRepository } from './repositories/invoice-mongo.repository';
+import { InvoiceMongoDBAdapter } from './adapters/invoice-mongodb.adapter';
+import { invoicesMongoProviderConfiguration } from './providers/invoices-mongo.provider';
+import { productsHttpProviderConfiguration } from './providers/products-http.provider';
+import { ProductsHttpClientAdapter } from './integrations/adapters/products-http.adapter';
+import { ProductsAdapterPort } from './integrations/ports/products-port.adapter';
 import { InvoicesController } from './invoices.controller';
 import { InvoicesService } from './invoices.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) =>
-        createMongoTypeOrmOptions(config, 'INVOICES_MONGODB_URI'),
-    }),
-    TypeOrmModule.forFeature([Invoice]),
-    ExternalApiModule,
+    MongoAdapterModule.forRootAsync(invoicesMongoProviderConfiguration),
+    HttpAdapterModule.forRootAsync(productsHttpProviderConfiguration),
   ],
   controllers: [InvoicesController],
   providers: [
-    InvoiceMongoRepository,
+    InvoiceMongoDBAdapter,
     InvoicesService,
-    { provide: ProductCatalogPort, useClass: ProductsHttpClient },
+    { provide: ProductsAdapterPort, useClass: ProductsHttpClientAdapter },
   ],
 })
 export class InvoicesModule {}

@@ -1,54 +1,72 @@
-import { Inject, Injectable } from '@nestjs/common';
-import type { CrudListQueryDto } from 'geometry-sdk/adapters';
+import { Inject, Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import type { ProductStockItemDto } from './dto/deduct-product-stock.dto';
-import { ProductMongoProviderRepository } from './repositories/product-mongo-provider.repository';
+import type { ProductListQueryDto } from './dto/product-list-query.dto';
+import { ProductMongoDBAdapter } from './adapters/product-mongodb.adapter';
+import { Product } from './entities/product.entity';
+import { planProductStockDeduction, requestedProductStock } from './utils/product-stock';
 
-type ProductMongoProviderRepositoryPort = Pick<
-  ProductMongoProviderRepository,
-  | 'findAll'
+type ProductMongoDBAdapterPort = Pick<
+  ProductMongoDBAdapter,
+  | 'findPage'
   | 'findOne'
   | 'create'
   | 'update'
   | 'remove'
   | 'removeMany'
-  | 'resolveMany'
-  | 'deductStock'
+  | 'query'
 >;
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @Inject(ProductMongoProviderRepository)
-    private readonly repository: ProductMongoProviderRepositoryPort,
+    @Inject(ProductMongoDBAdapter)
+    private readonly adapter: ProductMongoDBAdapterPort,
   ) {}
 
-  findAll(query: CrudListQueryDto) {
-    return this.repository.findAll(query);
+  public findPage(query: ProductListQueryDto) {
+    const { active, ...pageQuery } = query;
+    return this.adapter.findPage({
+      ...pageQuery,
+      ...(active === undefined ? {} : { filter: { active: active === 'true' } }),
+    });
   }
 
-  findOne(id: string) {
-    return this.repository.findOne(id);
+  public findOne(id: string) {
+    return this.adapter.findOne(id);
   }
-  create(dto: CreateProductDto) {
-    return this.repository.create(dto);
+  public create(dto: CreateProductDto) {
+    return this.adapter.create(Object.assign(new Product(), {
+      ...dto,
+      description: dto.description ?? '',
+      active: dto.active ?? true,
+    }));
   }
-  update(id: string, dto: UpdateProductDto) {
-    return this.repository.update(id, dto);
+  public update(id: string, dto: UpdateProductDto) {
+    return this.adapter.update(id, dto);
   }
-  remove(id: string) {
-    return this.repository.remove(id);
-  }
-
-  removeMany(ids: string[]) {
-    return this.repository.removeMany(ids);
-  }
-
-  resolveMany(ids: string[]) {
-    return this.repository.resolveMany(ids);
+  public remove(id: string) {
+    return this.adapter.remove(id);
   }
 
-  deductStock(items: ProductStockItemDto[]) {
-    return this.repository.deductStock(items);
+  public removeMany(ids: string[]) {
+    return this.adapter.removeMany(ids);
+  }
+
+  public resolveMany(ids: string[]) {
+    return this.adapter.query(JSON.stringify({ _id: { $in: ids.map((id) => ({ $oid: id })) } }));
+  }
+
+  public async deductStock(items: ProductStockItemDto[]) {
+    const requested = requestedProductStock(items);
+    const products = await this.resolveMany([...requested.keys()]);
+    const { updates, unavailable } = planProductStockDeduction(requested, products);
+    if (unavailable.length) {
+      throw new UnprocessableEntityException({
+        message: 'Insufficient product quantity',
+        products: unavailable,
+      });
+    }
+    return Promise.all(updates.map(({ id, quantity }) => this.adapter.update(id, { quantity })));
   }
 }

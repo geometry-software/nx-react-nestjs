@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { NotificationProvider, ThemeProvider, TooltipProvider } from 'geometry-sdk/components';
 import { I18nProvider } from './utils/i18n';
 import { getDataService } from './services/data.service';
+import { FirebaseSessionProvider } from './providers/firebase-session.provider';
 
 export function AppProvider({ children }: { children: ReactNode }) {
   return (
@@ -19,7 +20,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
               }}
             >
               <TooltipProvider>
-                <BrowserRouter>{children}</BrowserRouter>
+                <FirebaseSessionProvider>
+                  <BrowserRouter>{children}</BrowserRouter>
+                </FirebaseSessionProvider>
               </TooltipProvider>
             </NotificationProvider>
           )}

@@ -1,6 +1,7 @@
 import { Route, Trash2 } from 'lucide-react';
 import { Badge, Button, DataTable } from 'geometry-sdk/components';
 import { tableLabels } from '@/app/utils/i18n-labels';
+import { getPageCount } from '@/app/utils/pagination';
 import { formatDateTime } from '@/app/utils/format-value';
 import type { Shipment } from '../models/shipping.model';
 import type { Page } from '@/app/models/api.model';
@@ -86,8 +87,8 @@ export function ShippingTable({
         formatDateTime(shipment.updatedAt, language),
     },
     {
-      label: '',
-      className: 'w-24',
+      label: translate('common.actions'),
+      className: 'w-24 text-right',
       render: (shipment: Shipment) => {
         const trackingLabel = translate('shipping.viewTracking', {
           name: shipment.trackingNumber,
@@ -131,7 +132,7 @@ export function ShippingTable({
       onPage={onPageChange}
       onSelectedIdsChange={onSelectedIdsChange}
       page={data?.meta.page ?? 1}
-      pages={data?.meta.totalPages ?? 1}
+      pages={getPageCount(data?.meta)}
       pageSize={data?.meta.limit ?? pageSize}
       rows={data?.data ?? []}
       selectedIds={selectedIds}

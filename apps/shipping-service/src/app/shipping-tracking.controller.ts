@@ -1,4 +1,4 @@
-import { Controller, Param, Post } from '@nestjs/common';
+import { Controller, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Shipment } from './entities/shipment.entity';
 import { ShippingService } from './shipping.service';
@@ -9,12 +9,12 @@ export class ShippingTrackingController {
   constructor(private readonly shippingService: ShippingService) {}
 
   @Post(':id/tracking/refresh')
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Refresh tracking from Dummy Package Place Service',
   })
   @ApiOkResponse({ type: Shipment })
-  refreshTracking(@Param('id') id: string) {
+  public refreshTracking(@Param('id') id: string): Promise<Shipment> {
     return this.shippingService.refreshTracking(id);
   }
 }
-

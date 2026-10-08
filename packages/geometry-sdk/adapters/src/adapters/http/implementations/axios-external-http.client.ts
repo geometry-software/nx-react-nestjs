@@ -28,9 +28,10 @@ export class AxiosExternalHttpClient implements ExternalHttpClient {
   private readonly activity = new Map<string, UpstreamActivity>();
   private readonly listeners = new Set<ExternalHttpActivityListener>();
 
-  constructor() {
+  constructor(options: { baseUrl?: string; timeoutMs?: number } = {}) {
     this.client = axios.create({
-      timeout: 5_000,
+      baseURL: options.baseUrl,
+      timeout: options.timeoutMs ?? 5_000,
       headers: { Accept: 'application/json' },
       maxRedirects: 5,
       maxContentLength: 5 * 1024 * 1024,
@@ -45,6 +46,7 @@ export class AxiosExternalHttpClient implements ExternalHttpClient {
     });
   }
 
+  /** Sends an HTTP request and returns its decoded response. */
   async execute<T>(request: ExternalHttpRequest<T>): Promise<T> {
     const startedAt = performance.now();
     this.start(request.service);
@@ -74,6 +76,7 @@ export class AxiosExternalHttpClient implements ExternalHttpClient {
     }
   }
 
+  /** Returns the current HTTP request activity snapshot. */
   getActivity(service?: string): ExternalHttpActivity {
     if (service) return this.snapshot(this.activity.get(service));
     const states = [...this.activity.values()];
@@ -87,6 +90,7 @@ export class AxiosExternalHttpClient implements ExternalHttpClient {
     };
   }
 
+  /** Subscribes to HTTP request activity and returns an unsubscribe function. */
   subscribe(listener: ExternalHttpActivityListener): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);

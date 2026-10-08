@@ -1,8 +1,6 @@
 import { Package, RefreshCw } from 'lucide-react';
 import type { ReactNode } from 'react';
 import {
-  Alert,
-  AlertDescription,
   Badge,
   Button,
   EntityDialog,
@@ -14,7 +12,6 @@ import type { Translate } from '@/app/locales/locale';
 
 export function ShipmentDetailsDialog({
   description,
-  error,
   isRefreshing,
   language,
   onClose,
@@ -23,7 +20,6 @@ export function ShipmentDetailsDialog({
   translate,
 }: {
   description: string;
-  error: string;
   isRefreshing: boolean;
   language: Language;
   onClose: () => void;
@@ -91,11 +87,6 @@ export function ShipmentDetailsDialog({
             onRefresh={onRefresh}
           />
 
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
         </div>
       )}
     </EntityDialog>

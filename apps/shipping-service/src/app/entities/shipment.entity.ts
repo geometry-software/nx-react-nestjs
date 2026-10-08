@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { EntityId } from 'geometry-sdk/adapters';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ObjectIdColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import type { MongoDbAdapterModel } from 'geometry-sdk/adapters';
 
 export const shipmentStatuses = [
   'created',
@@ -53,45 +46,34 @@ export type ShipmentTrackingEvent = {
   source: 'local' | 'dummy-package-place';
 };
 
-@Entity({ name: 'shipments' })
-export class Shipment {
-  @ObjectIdColumn()
+export class Shipment implements MongoDbAdapterModel {
   @ApiProperty({ type: String })
-  id!: EntityId;
+  id!: string;
 
-  @Column()
   @ApiProperty()
   trackingNumber!: string;
 
-  @Column()
   @ApiProperty({ enum: shipmentStatuses })
   status!: ShipmentStatus;
 
-  @Column()
   @ApiProperty()
   recipient!: ShipmentRecipient;
 
-  @Column()
   @ApiProperty({ isArray: true })
   items!: ShipmentItem[];
 
-  @Column()
   @ApiProperty({ isArray: true })
   invoices!: ShipmentInvoice[];
 
-  @Column()
   @ApiProperty()
   createdBy!: ShipmentUser;
 
-  @Column()
   @ApiProperty({ isArray: true })
   trackingEvents!: ShipmentTrackingEvent[];
 
-  @CreateDateColumn()
   @ApiProperty()
   createdAt!: Date;
 
-  @UpdateDateColumn()
   @ApiProperty()
   updatedAt!: Date;
 }

@@ -17,6 +17,7 @@ export type DataFlowItem = {
   title: string;
   description: string;
   port?: string;
+  icon?: LucideIcon;
 };
 
 export type DataFlowDiagramProps = {
@@ -33,10 +34,10 @@ export type DataFlowDiagramProps = {
   services: DataFlowItem[];
   persistenceTitle: string;
   persistenceDescription: string;
-  database: DataFlowItem;
+  dataAdapters: DataFlowItem[];
   externalTitle: string;
   externalDescription: string;
-  externalApis: DataFlowItem[];
+  integrationAdapters: DataFlowItem[];
 };
 
 const frontendIcons: LucideIcon[] = [Package, FileText, Truck, ShieldCheck];
@@ -56,10 +57,10 @@ export function DataFlowDiagram({
   services,
   persistenceTitle,
   persistenceDescription,
-  database,
+  dataAdapters,
   externalTitle,
   externalDescription,
-  externalApis,
+  integrationAdapters,
 }: DataFlowDiagramProps) {
   const backendServices = [...services, ...authorizationServices];
 
@@ -118,7 +119,7 @@ export function DataFlowDiagram({
 
       <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
         <div>
-          <FlowArrow label="TypeORM" />
+          <FlowArrow label={persistenceTitle} />
           <section className="h-[calc(100%-4rem)] rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 sm:p-6">
             <LayerHeading
               icon={Database}
@@ -126,13 +127,20 @@ export function DataFlowDiagram({
               description={persistenceDescription}
               tone="green"
             />
-            <div className="mt-5">
-              <DiagramCard item={database} icon={Database} tone="green" />
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {dataAdapters.map((item) => (
+                <DiagramCard
+                  key={item.title}
+                  item={item}
+                  icon={item.icon ?? Database}
+                  tone="green"
+                />
+              ))}
             </div>
           </section>
         </div>
         <div>
-          <FlowArrow label="Axios · HTTP" />
+          <FlowArrow label={externalTitle} />
           <section className="h-[calc(100%-4rem)] rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 sm:p-6">
             <LayerHeading
               icon={Globe2}
@@ -141,11 +149,11 @@ export function DataFlowDiagram({
               tone="green"
             />
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {externalApis.map((item) => (
+              {integrationAdapters.map((item) => (
                 <DiagramCard
                   key={item.title}
                   item={item}
-                  icon={Globe2}
+                  icon={item.icon ?? Globe2}
                   tone="green"
                 />
               ))}

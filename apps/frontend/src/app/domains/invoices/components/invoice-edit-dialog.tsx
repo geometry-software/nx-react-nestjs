@@ -1,7 +1,5 @@
 import type { SubmitEvent } from 'react';
 import {
-  Alert,
-  AlertDescription,
   Button,
   EntityDialog,
   FormField,
@@ -13,7 +11,6 @@ import type { Translate } from '@/app/locales/locale';
 
 export function InvoiceEditDialog({
   editTarget,
-  error,
   fieldErrors,
   isUpdating,
   onClose,
@@ -21,7 +18,6 @@ export function InvoiceEditDialog({
   translate,
 }: {
   editTarget: Invoice | null;
-  error: string;
   fieldErrors: Record<string, string>;
   isUpdating: boolean;
   onClose: () => void;
@@ -50,11 +46,6 @@ export function InvoiceEditDialog({
             name="description"
           />
         </FormField>
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
         <Button
           className="justify-self-end px-6"
           loading={isUpdating}

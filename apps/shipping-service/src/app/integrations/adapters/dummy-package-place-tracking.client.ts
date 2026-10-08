@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ExternalHttpClient } from 'geometry-sdk/adapters';
+import { FetchAdapter } from 'geometry-sdk/adapters';
 import type {
   ShipmentStatus,
   ShipmentTrackingEvent,
@@ -15,7 +15,7 @@ type DummyPackagePlaceEvent = {
 @Injectable()
 export class DummyPackagePlaceTrackingClient implements TrackingPort {
   constructor(
-    private readonly http: ExternalHttpClient,
+    private readonly http: FetchAdapter,
   ) {}
 
   async track(trackingNumber: string): Promise<TrackingSnapshot> {

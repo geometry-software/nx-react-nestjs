@@ -6,7 +6,6 @@
   "exports": {
     "./package.json": "./package.json",
     "./adapters": {
-      "browser": "./adapters/src/adapters/swagger/index.ts",
       "@org/source": "./src/adapters.ts",
       "types": "./src/adapters.ts",
       "import": "./src/adapters.ts",
@@ -24,6 +23,7 @@
     "tags": ["scope:geometry-sdk", "type:facade"]
   },
   "dependencies": {
-    "adapters": "0.0.1"
+    "adapters": "1.0.0",
+    "components": "0.0.1"
   }
 }

@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from 'geometry-sdk/components';
 import { tableLabels } from '@/app/utils/i18n-labels';
+import { getPageCount } from '@/app/utils/pagination';
 import { formatDateTime } from '@/app/utils/format-value';
 import type { User } from '../models/users.model';
 import type { Page } from '@/app/models/api.model';
@@ -85,8 +86,8 @@ export function UsersTable({
       render: (user: User) => formatDateTime(user.updatedAt, language),
     },
     {
-      label: translate('users.actions'),
-      className: 'w-24',
+      label: translate('common.actions'),
+      className: 'w-24 text-right',
       render: (user: User) => (
         <div className="flex justify-end gap-1">
           <UserAction
@@ -116,7 +117,7 @@ export function UsersTable({
       onPage={onPageChange}
       onSelectedIdsChange={onSelectedIdsChange}
       page={data?.meta.page ?? 1}
-      pages={data?.meta.totalPages ?? 1}
+      pages={getPageCount(data?.meta)}
       pageSize={data?.meta.limit ?? pageSize}
       rows={data?.data ?? []}
       selectedIds={selectedIds}

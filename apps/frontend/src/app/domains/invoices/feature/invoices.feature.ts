@@ -31,9 +31,7 @@ export function useInvoicesFeature() {
   const [editTarget, setEditTarget] = useState<Invoice | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<Invoice | null>(null);
   const [cancelTarget, setCancelTarget] = useState<Invoice | null>(null);
-  const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [actionError, setActionError] = useState('');
 
   useQueryErrorNotification({
     isError,
@@ -43,35 +41,29 @@ export function useInvoicesFeature() {
   });
 
   const openEditDialog = (invoice: Invoice) => {
-    setError('');
     setFieldErrors({});
     setEditTarget(invoice);
   };
 
   const closeEditDialog = () => {
     setEditTarget(null);
-    setError('');
     setFieldErrors({});
   };
 
   const openConfirmDialog = (invoice: Invoice) => {
-    setActionError('');
     setConfirmTarget(invoice);
   };
 
   const closeConfirmDialog = () => {
     setConfirmTarget(null);
-    setActionError('');
   };
 
   const openCancelDialog = (invoice: Invoice) => {
-    setActionError('');
     setCancelTarget(invoice);
   };
 
   const closeCancelDialog = () => {
     setCancelTarget(null);
-    setActionError('');
   };
 
   async function save(event: React.SubmitEvent<HTMLFormElement>) {
@@ -84,7 +76,6 @@ export function useInvoicesFeature() {
     });
     if (!parsed.success) {
       setFieldErrors(Object.fromEntries(parsed.error.issues.map(({ path, message }) => [path.join('.'), message])));
-      setError('');
       notifyError(translate('common.validation'));
       return;
     }
@@ -97,11 +88,10 @@ export function useInvoicesFeature() {
         }),
     );
     if (!result.ok) {
-      setError(translate('invoices.rejected'));
+      notifyError(translate('invoices.rejected'));
       return;
     }
     setEditTarget(null);
-    setError('');
     notifySuccess(translate('invoices.saved'));
   }
 
@@ -111,14 +101,13 @@ export function useInvoicesFeature() {
       () => confirm({ id: confirmTarget.id, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setActionError(translate('invoices.confirmRejected'));
+      notifyError(translate('invoices.confirmRejected'));
       return;
     }
     notifySuccess(
       translate('invoices.confirmed', { name: confirmTarget.name }),
     );
     setConfirmTarget(null);
-    setActionError('');
   }
 
   async function cancelPendingInvoice() {
@@ -127,14 +116,13 @@ export function useInvoicesFeature() {
       () => cancel({ id: cancelTarget.id, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setActionError(translate('invoices.rejected'));
+      notifyError(translate('invoices.rejected'));
       return;
     }
     notifySuccess(
       translate('invoices.cancelled', { name: cancelTarget.name }),
     );
     setCancelTarget(null);
-    setActionError('');
   }
 
   async function printInvoice(invoice: Invoice) {
@@ -174,11 +162,7 @@ export function useInvoicesFeature() {
     setConfirmTarget,
     cancelTarget,
     setCancelTarget,
-    error,
     fieldErrors,
-    setError,
-    actionError,
-    setActionError,
     change,
     changeOrder,
     openEditDialog,

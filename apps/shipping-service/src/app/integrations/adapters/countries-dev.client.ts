@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ExternalHttpClient } from 'geometry-sdk/adapters';
+import { FetchAdapter } from 'geometry-sdk/adapters';
 import {
   type CityLocation,
   type CountryLocation,
@@ -21,7 +21,7 @@ export class CountriesDevClient implements GeographyPort {
   private countries?: Promise<CountryLocation[]>;
 
   constructor(
-    private readonly http: ExternalHttpClient,
+    private readonly http: FetchAdapter,
   ) {}
 
   listCountries(): Promise<CountryLocation[]> {

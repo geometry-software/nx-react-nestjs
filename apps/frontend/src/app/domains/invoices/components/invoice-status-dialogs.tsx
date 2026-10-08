@@ -2,7 +2,6 @@ import { ConfirmDialog } from 'geometry-sdk/components';
 import type { Translate } from '@/app/locales/locale';
 
 export function InvoiceStatusDialogs({
-  actionError,
   cancelTargetName,
   confirmTargetName,
   isCancelling,
@@ -15,7 +14,6 @@ export function InvoiceStatusDialogs({
   onConfirm,
   translate,
 }: {
-  actionError: string;
   cancelTargetName: string;
   confirmTargetName: string;
   isCancelling: boolean;
@@ -32,7 +30,6 @@ export function InvoiceStatusDialogs({
     <>
       <ConfirmDialog
         busy={isConfirming}
-        error={actionError}
         itemName={confirmTargetName}
         labels={{
           title: translate('invoices.confirmTitle'),
@@ -49,7 +46,6 @@ export function InvoiceStatusDialogs({
       />
       <ConfirmDialog
         busy={isCancelling}
-        error={actionError}
         itemName={cancelTargetName}
         labels={{
           title: translate('invoices.cancelTitle'),

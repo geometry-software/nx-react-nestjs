@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from 'geometry-sdk/components';
 import { tableLabels } from '@/app/utils/i18n-labels';
+import { getPageCount } from '@/app/utils/pagination';
 import { formatCurrency, formatDateTime } from '@/app/utils/format-value';
 import type { Product } from '../models/products.model';
 import type { Language } from '@/app/utils/i18n';
@@ -93,8 +94,8 @@ export function ProductsTable({
           render: (product) => formatDateTime(product.updatedAt, language),
         },
         {
-          label: '',
-          className: 'w-24',
+          label: translate('common.actions'),
+          className: 'w-24 text-right',
           render: (product) => (
             <div className="flex justify-end gap-1">
               <ProductAction
@@ -120,7 +121,7 @@ export function ProductsTable({
       onPage={(page) => onChange('page', String(page))}
       onSelectedIdsChange={onSelectedIdsChange}
       page={data?.meta.page ?? 1}
-      pages={data?.meta.totalPages ?? 1}
+      pages={getPageCount(data?.meta)}
       pageSize={data?.meta.limit ?? Number(query.get('limit') ?? 10)}
       rows={data?.data ?? []}
       selectedIds={selectedIds}

@@ -40,7 +40,6 @@ export function Products() {
       <ProductFormDialog
         busy={feature.saveBusy}
         editTarget={feature.editTarget}
-        error={feature.error}
         invalidFields={feature.invalidFields}
         fieldErrors={feature.fieldErrors}
         onClose={feature.closeProductDialog}
@@ -49,9 +48,7 @@ export function Products() {
         translate={feature.translate}
       />
       <ProductDeleteDialogs
-        bulkDeleteError={feature.bulkDeleteError}
         bulkDeleteOpen={feature.bulkDeleteOpen}
-        deleteError={feature.deleteError}
         deleteTarget={feature.deleteTarget}
         isBulkDeleting={feature.isBulkDeleting}
         isDeleting={feature.isDeleting}
@@ -64,7 +61,6 @@ export function Products() {
       />
       <ProductInvoiceDialog
         busy={feature.invoiceBusy}
-        error={feature.invoiceError}
         invoiceDescription={feature.invoiceDescription}
         invoiceName={feature.invoiceName}
         language={feature.language}

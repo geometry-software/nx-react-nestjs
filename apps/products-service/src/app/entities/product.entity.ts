@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { EntityId, MongoCollectionProviderModel } from 'geometry-sdk/adapters';
+import type { MongoDbAdapterModel } from 'geometry-sdk/adapters';
 
-export class Product implements MongoCollectionProviderModel {
+export class Product implements MongoDbAdapterModel {
   @ApiProperty({ type: String })
-  id!: EntityId;
+  id!: string;
 
   @ApiProperty()
   name!: string;

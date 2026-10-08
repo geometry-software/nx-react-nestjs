@@ -1,23 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongoProviderModule } from 'geometry-sdk/adapters';
+import { ConfigModule } from '@nestjs/config';
+import { MongoAdapterModule } from 'geometry-sdk/adapters';
 import { ProductsController } from './products.controller';
-import { ProductMongoProviderRepository } from './repositories/product-mongo-provider.repository';
+import { ProductMongoDBAdapter } from './adapters/product-mongodb.adapter';
+import { productsMongoProviderConfiguration } from './providers/products-mongo.provider';
 import { ProductsService } from './products.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    MongoProviderModule.forRootAsync({
-      id: 'products',
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        provider: 'mongo',
-        connectionString: config.getOrThrow<string>('PRODUCTS_MONGODB_URI'),
-      }),
-    }),
+    MongoAdapterModule.forRootAsync(productsMongoProviderConfiguration),
   ],
-  controllers: [ProductsController],
-  providers: [ProductMongoProviderRepository, ProductsService],
+  controllers: [
+    ProductsController
+  ],
+  providers: [
+    ProductMongoDBAdapter, 
+    ProductsService
+  ],
 })
 export class ProductsModule {}

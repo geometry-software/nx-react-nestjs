@@ -103,3 +103,9 @@ Check command syntax with `npm exec nx -- <command> --help` when a flag or targe
 
 - Every new method in a repository or service class must declare an explicit access modifier: `public`, `protected`, or `private`.
 - Do not rely on implicit public access. Apply this rule to instance, static, abstract, and overridden methods.
+
+# New microservice structure
+
+- Before creating a new microservice, read the [root microservice guide](README.md#microservice-structure-and-adapter-wiring), the [geometry-sdk adapter guide](packages/geometry-sdk/adapters/README.md), and the READMEs in [Login](apps/login-service/README.md), [Products](apps/products-service/README.md), [Invoices](apps/invoices-service/README.md), and [Shipping](apps/shipping-service/README.md).
+- Use the service READMEs for business boundaries and local structure. Use the SDK adapter guide and the public `geometry-sdk/adapters` entry point for collection contracts, Nest adapter modules, injection tokens, provider configuration, and implementation choices. Keep domain adapters in the microservice and shared infrastructure adapters in the SDK. Add frontend-facing UI only through the documented [geometry-sdk components package](packages/geometry-sdk/components/README.md) when it is reusable.
+- Add a README to the new microservice that explains its business flow, source layout, adapter and provider connections, external dependencies, and required configuration. Update the root service map when the new service is added.

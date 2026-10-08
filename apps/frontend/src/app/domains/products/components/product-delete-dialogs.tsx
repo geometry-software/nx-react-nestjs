@@ -4,9 +4,7 @@ import type { Product } from '../models/products.model';
 import type { Translate } from '@/app/locales/locale';
 
 export function ProductDeleteDialogs({
-  bulkDeleteError,
   bulkDeleteOpen,
-  deleteError,
   deleteTarget,
   isBulkDeleting,
   isDeleting,
@@ -17,9 +15,7 @@ export function ProductDeleteDialogs({
   selectedCount,
   translate,
 }: {
-  bulkDeleteError: string;
   bulkDeleteOpen: boolean;
-  deleteError: string;
   deleteTarget: Product | null;
   isBulkDeleting: boolean;
   isDeleting: boolean;
@@ -36,7 +32,6 @@ export function ProductDeleteDialogs({
     <>
       <ConfirmDialog
         busy={isDeleting}
-        error={deleteError}
         itemName={deleteTarget?.name ?? ''}
         labels={labels}
         onClose={onCloseDelete}
@@ -45,7 +40,6 @@ export function ProductDeleteDialogs({
       />
       <ConfirmDialog
         busy={isBulkDeleting}
-        error={bulkDeleteError}
         itemName={translate('common.selectedItems', { count: selectedCount })}
         labels={labels}
         onClose={onCloseBulkDelete}

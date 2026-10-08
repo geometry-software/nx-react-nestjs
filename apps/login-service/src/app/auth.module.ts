@@ -1,32 +1,28 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { createMongoTypeOrmOptions } from 'geometry-sdk/adapters';
+import { EmailAdapterModule, FireAuthAdapterModule, MongoAdapterModule, SqlAdapterModule } from 'geometry-sdk/adapters';
+import { LoginFirebaseAuthAdapter } from './adapters/login-firebase-auth.adapter';
+import { LoginEmailAdapter } from './adapters/login-email.adapter';
+import { SessionSqlAdapter } from './adapters/session-sql.adapter';
+import { UserMongoDBAdapter } from './adapters/user-mongodb.adapter';
+import { sessionSupabaseSqlProviderConfiguration } from './providers/session-supabase-sql.provider';
+import { loginEmailProviderConfiguration } from './providers/login-email.provider';
+import { usersMongoProviderConfiguration } from './providers/users-mongo.provider';
+import { loginFirebaseAuthProviderConfiguration } from './providers/login-firebase-auth.provider';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { Session } from './entities/session.entity';
-import { User } from './entities/user.entity';
-import { UserMongoRepository } from './repositories/user-mongo.repository';
+import { EmailService } from './services/email.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) =>
-        createMongoTypeOrmOptions(config, 'LOGIN_MONGODB_URI'),
-    }),
-    TypeOrmModule.forFeature([Session]),
-    TypeOrmModule.forRootAsync({
-      name: 'users',
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) =>
-        createMongoTypeOrmOptions(config, 'USERS_MONGODB_URI'),
-    }),
-    TypeOrmModule.forFeature([User], 'users'),
+    SqlAdapterModule.forRootAsync(sessionSupabaseSqlProviderConfiguration),
+    EmailAdapterModule.forRootAsync(loginEmailProviderConfiguration),
+    MongoAdapterModule.forRootAsync(usersMongoProviderConfiguration),
+    FireAuthAdapterModule.forRootAsync(loginFirebaseAuthProviderConfiguration),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -36,6 +32,6 @@ import { UsersService } from './users.service';
     }),
   ],
   controllers: [AuthController, UsersController],
-  providers: [AuthService, UserMongoRepository, UsersService],
+  providers: [AuthService, EmailService, LoginEmailAdapter, LoginFirebaseAuthAdapter, SessionSqlAdapter, UserMongoDBAdapter, UsersService],
 })
 export class AuthModule {}

@@ -1,6 +1,10 @@
-import type { PageQuery, RepositorySortOrder } from "../core/query.js";
-import type { CollectionApi, RepositoryReadPort } from "../core/repository.js";
-import type { PaginatedResult } from "../core/types.js";
+import type {
+  PageableCollectionAdapter,
+  Pageable,
+  PaginationMeta,
+  PaginatedResult,
+  CollectionSortOrder,
+} from "../core/api.js";
 
 export type SupabaseFilterOperator =
   | "eq"
@@ -22,51 +26,29 @@ export type SupabaseFilter<TData> = {
 
 export type SupabaseOrder<TData> = {
   column: Extract<keyof TData, string>;
-  direction?: RepositorySortOrder;
+  direction?: CollectionSortOrder;
 };
 
-export type SupabaseJsRepositoryQuery<TData> = PageQuery & {
+export type SupabaseJsRepositoryQuery<TData> = Pick<PaginationMeta, 'page' | 'limit'> & {
   filters?: readonly SupabaseFilter<TData>[];
   order?: readonly SupabaseOrder<TData>[];
 };
 
-export type SupabaseSqlRepositoryQuery<TData> = PageQuery & {
-  filters?: readonly SupabaseFilter<TData>[];
-  order?: readonly SupabaseOrder<TData>[];
-};
+export type SupabaseJsQueryPort<TData> = Pageable<
+  TData,
+  SupabaseJsRepositoryQuery<TData>,
+  PaginatedResult<TData>
+>;
 
-export interface SupabaseJsQueryPort<TData>
-  extends RepositoryReadPort<
-    TData,
-    string,
-    SupabaseJsRepositoryQuery<TData>,
-    PaginatedResult<TData>
-  > {}
-
-export interface SupabaseJsRepositoryAdapterPort<
+export interface SupabaseJsAdapterPort<
   TData,
   TCreate = TData,
   TUpdate = TCreate,
   TId = string,
-> extends CollectionApi<
+> extends PageableCollectionAdapter<
     TData,
-    TCreate,
     TUpdate,
-    TId,
     SupabaseJsRepositoryQuery<TData>,
-    PaginatedResult<TData>
-  > {}
-
-export interface SupabaseSqlRepositoryAdapterPort<
-  TData,
-  TCreate = TData,
-  TUpdate = TCreate,
-  TId = string,
-> extends CollectionApi<
-    TData,
-    TCreate,
-    TUpdate,
-    TId,
-    SupabaseSqlRepositoryQuery<TData>,
-    PaginatedResult<TData>
-  > {}
+    PaginatedResult<TData>,
+    TId
+  > { create(value: TData | TCreate): Promise<TData>; }

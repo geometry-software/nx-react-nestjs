@@ -19,7 +19,7 @@ src/app/
   hooks/               App-only hooks (currently request activity)
   locales/             Translation keys and language catalogs
   models/              App-wide types and route definitions
-  services/            Shared API and request-activity services
+  services/            Shared API, request activity, and Firebase Auth client
   utils/               Shared helpers and invoice PDF generation
   providers.tsx        App-wide React provider composition
   app.tsx              Route rendering
@@ -32,7 +32,7 @@ src/app/
 
 | Domain | What the frontend does | Backend relationship |
 | --- | --- | --- |
-| `auth` | Lets a visitor register or log in and displays the returned token. | Sends credentials to Login. |
+| `auth` | Lets a visitor register or log in and displays the returned application token. | Sends credentials and the current anonymous Firebase ID token to Login. |
 | `users` | Lists users and supports editing, single deletion, and bulk deletion. User creation happens through registration in `auth`. | Reads and updates the user directory owned by Login. |
 | `products` | Manages the catalog and available quantities. A user can select products and quantities to create an invoice. | Uses Products for catalog operations and Invoices for invoice creation. |
 | `invoices` | Lists invoices, edits their descriptions, confirms or cancels pending invoices, and downloads a PDF. | Invoices owns invoice state; confirming one asks Products to deduct stock. |
@@ -56,7 +56,7 @@ AppProvider (API, theme, i18n, notifications, tooltips, router)
 
 `getDataService()` in `src/app/services/data.service.ts` lazily creates one shared `ApiService` and `RequestActivityService` instance per loaded module. `AppProvider` supplies the RTK Query API to the React tree. Domain services inject endpoints into that same API; they do not create another `createApi` instance. `ApiService` tracks request activity and resolves backend origins using the current browser origin plus the ports defined in `vite.config.mts`.
 
-Add a provider in `src/app/providers.tsx` only for application-wide behavior. Its current order is API, theme, i18n, notifications, tooltips, then router. A new domain normally consumes these providers.
+Add a provider in `src/app/providers.tsx` only for application-wide behavior. Its current order is API, theme, i18n, notifications, tooltips, Firebase session, then router. The Firebase browser SDK manages the anonymous identity with IndexedDB persistence; on startup, the Firebase session provider obtains the current ID token, sends it to Login Service for verification and SQL session preparation, and keeps only the UID in React state. It shows a success notification only when a new SQL session is created. Registration sends a fresh ID token so Login Service can attach the Mongo user to that SQL session. The email/password form is handled separately through MongoDB and SQL. A new domain normally consumes these providers.
 
 List query state lives in the URL through `useListQueryParams`. The serialized query string is the RTK Query argument and cache key. A mutation that updates a list must use the same cache key when calling `updateQueryData`; see `src/app/domains/products/service/products.service.ts` and `src/app/utils/rtk-query-cache.ts`.
 

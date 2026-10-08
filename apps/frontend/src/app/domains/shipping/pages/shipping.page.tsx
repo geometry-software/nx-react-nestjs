@@ -40,7 +40,6 @@ export function Shipping() {
         citiesLoading={feature.citiesLoading}
         countries={feature.countries}
         countriesLoading={feature.countriesLoading}
-        error={feature.error}
         fieldErrors={feature.fieldErrors}
         invalidFields={feature.invalidFields}
         invoices={feature.invoices}
@@ -67,7 +66,6 @@ export function Shipping() {
       />
       <ShipmentDetailsDialog
         description={feature.detailsDescription}
-        error={feature.error}
         isRefreshing={feature.isRefreshing}
         language={feature.language}
         onClose={feature.closeDetailsDialog}
@@ -76,9 +74,7 @@ export function Shipping() {
         translate={feature.translate}
       />
       <ShipmentDeleteDialogs
-        bulkDeleteError={feature.bulkDeleteError}
         bulkDeleteOpen={feature.bulkDeleteOpen}
-        deleteError={feature.deleteError}
         deleteOpen={feature.deleteOpen}
         deleteTargetName={feature.deleteTargetName}
         isBulkDeleting={feature.isBulkDeleting}

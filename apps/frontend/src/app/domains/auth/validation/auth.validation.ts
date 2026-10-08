@@ -11,5 +11,6 @@ export const createAuthValidation = (translate: Translate, mode: 'login' | 'regi
     ? loginValidation
     : loginValidation.extend({
         name: z.string().trim().min(2, translate('validation.min2')),
+        role: z.enum(['viewer', 'manager', 'admin'], { error: translate('common.required') }),
       });
 };

@@ -27,13 +27,11 @@ export function useUsersFeature() {
     isDeleting,
     isBulkDeleting,
   } = useUsersService(requestQuery, isReady);
-  const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<User | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
-  const [deleteError, setDeleteError] = useState('');
   const {
     selectedIds,
     setSelectedIds,
@@ -41,7 +39,6 @@ export function useUsersFeature() {
     removeSelectedId,
   } = useRowSelection(requestQuery);
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
-  const [bulkDeleteError, setBulkDeleteError] = useState('');
   const [role, setRole] = useState('viewer');
   const [search, setSearch] = useDebouncedSearchParam(params, setParams);
 
@@ -59,28 +56,23 @@ export function useUsersFeature() {
   };
 
   const openDeleteDialog = (user: User) => {
-    setDeleteError('');
     setDeleteTarget(user);
   };
 
   const closeDeleteDialog = () => {
     setDeleteTarget(null);
-    setDeleteError('');
   };
 
   const openBulkDeleteDialog = () => {
-    setBulkDeleteError('');
     setBulkDeleteOpen(true);
   };
 
   const closeBulkDeleteDialog = () => {
     setBulkDeleteOpen(false);
-    setBulkDeleteError('');
   };
 
   const closeDialog = () => {
     setDialogOpen(false);
-    setError('');
     setInvalidFields(new Set());
     setFieldErrors({});
   };
@@ -97,7 +89,6 @@ export function useUsersFeature() {
       active: true,
     });
     if (!parsed.success) {
-      setError('');
       notifyError(translate('common.validation'));
       setFieldErrors(Object.fromEntries(parsed.error.issues.map(({ path, message }) => [path.join('.'), message])));
       setInvalidFields(
@@ -115,7 +106,7 @@ export function useUsersFeature() {
         }),
     );
     if (!saved.ok) {
-      setError(translate('users.rejected'));
+      notifyError(translate('users.rejected'));
       return;
     }
     formElement.reset();
@@ -129,13 +120,12 @@ export function useUsersFeature() {
       () => remove({ id: deleteTarget.id, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setDeleteError(translate('users.rejected'));
+      notifyError(translate('users.rejected'));
       return;
     }
     notifySuccess(translate('users.removed', { name: deleteTarget.name }));
     removeSelectedId(deleteTarget.id);
     setDeleteTarget(null);
-    setDeleteError('');
   }
 
   async function deleteSelectedUsers() {
@@ -145,7 +135,7 @@ export function useUsersFeature() {
       () => removeMany({ ids, cacheKey: requestQuery }),
     );
     if (!result.ok) {
-      setBulkDeleteError(translate('users.rejected'));
+      notifyError(translate('users.rejected'));
       return;
     }
     notifySuccess(
@@ -153,7 +143,6 @@ export function useUsersFeature() {
     );
     clearSelection();
     setBulkDeleteOpen(false);
-    setBulkDeleteError('');
   }
 
   return {
@@ -167,7 +156,6 @@ export function useUsersFeature() {
     isUpdating,
     isDeleting,
     isBulkDeleting,
-    error,
     invalidFields,
     fieldErrors,
     dialogOpen,
@@ -176,14 +164,10 @@ export function useUsersFeature() {
     setEditTarget,
     deleteTarget,
     setDeleteTarget,
-    deleteError,
-    setDeleteError,
     selectedIds,
     setSelectedIds,
     bulkDeleteOpen,
     setBulkDeleteOpen,
-    bulkDeleteError,
-    setBulkDeleteError,
     role,
     setRole,
     search,

@@ -1,37 +1,41 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { CrudListQueryDto } from 'geometry-sdk/adapters';
 import { UpdateUserDto } from './dto/user.dto';
-import { UserMongoRepository } from './repositories/user-mongo.repository';
+import { UserMongoDBAdapter } from './adapters/user-mongodb.adapter';
+import { normalizeEmail } from './utils/normalize-email';
 
-type UserMongoRepositoryPort = Pick<
-  UserMongoRepository,
-  'findAll' | 'findOne' | 'update' | 'remove' | 'removeMany'
+type UserMongoDBAdapterPort = Pick<
+  UserMongoDBAdapter,
+  'findPage' | 'findOne' | 'update' | 'remove' | 'removeMany'
 >;
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(UserMongoRepository)
-    private readonly repository: UserMongoRepositoryPort,
+    @Inject(UserMongoDBAdapter)
+    private readonly adapter: UserMongoDBAdapterPort,
   ) {}
 
-  findAll(query: CrudListQueryDto) {
-    return this.repository.findAll(query);
+  public findPage(query: CrudListQueryDto) {
+    return this.adapter.findPage(query);
   }
 
-  findOne(id: string) {
-    return this.repository.findOne(id);
+  public findOne(id: string) {
+    return this.adapter.findOne(id);
   }
 
-  update(id: string, dto: UpdateUserDto) {
-    return this.repository.update(id, dto);
+  public update(id: string, dto: UpdateUserDto) {
+    return this.adapter.update(id, {
+      ...dto,
+      ...(dto.email ? { email: normalizeEmail(dto.email) } : {}),
+    });
   }
 
-  remove(id: string) {
-    return this.repository.remove(id);
+  public remove(id: string) {
+    return this.adapter.remove(id);
   }
 
-  removeMany(ids: string[]) {
-    return this.repository.removeMany(ids);
+  public removeMany(ids: string[]) {
+    return this.adapter.removeMany(ids);
   }
 }
